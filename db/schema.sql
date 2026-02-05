@@ -1,6 +1,5 @@
-CREATE SCHEMA IF NOT EXISTS domainwatcher;
 
-create table domainwatcher.dw_registry(
+create table dw_registry(
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     domain varchar(128) NOT NULL,
     origin varchar(128) NOT NULL,
@@ -13,7 +12,7 @@ create table domainwatcher.dw_registry(
     CONSTRAINT registry_pkey PRIMARY KEY (id)
 );
 
-create table domainwatcher.dw_watcher(
+create table dw_watcher(
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     registry_id uuid NOT NULL,
     mail_address varchar(128),
