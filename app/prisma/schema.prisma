@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model dw_registry {
+  id                  String       @id(map: "registry_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  domain              String       @db.VarChar(128)
+  origin              String       @db.VarChar(128)
+  registry_created_at DateTime?    @db.Timestamp(6)
+  registry_updated_at DateTime?    @db.Timestamp(6)
+  registry_expires_at DateTime?    @db.Timestamp(6)
+  created_at          DateTime     @default(now()) @db.Timestamp(6)
+  updated_at          DateTime?    @db.Timestamp(6)
+  deleted_at          DateTime?    @db.Timestamp(6)
+  dw_watcher          dw_watcher[]
+}
+
+model dw_watcher {
+  id                   String      @id(map: "watcher_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  registry_id          String      @db.Uuid
+  mail_address         String?     @db.VarChar(128)
+  notification_enabled Boolean     @default(true)
+  created_at           DateTime    @default(now()) @db.Timestamp(6)
+  updated_at           DateTime?   @db.Timestamp(6)
+  deleted_at           DateTime?   @db.Timestamp(6)
+  dw_registry          dw_registry @relation(fields: [registry_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "registry_id_fkey")
+
+  @@unique([mail_address, registry_id], map: "watcher_ukey")
+}
