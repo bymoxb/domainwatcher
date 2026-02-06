@@ -11,9 +11,9 @@ model dw_registry {
   id                  String       @id(map: "registry_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   domain              String       @db.VarChar(128)
   origin              String       @db.VarChar(128)
-  registry_created_at DateTime?    @db.Timestamp(6)
+  registry_created_at DateTime     @db.Timestamp(6)
   registry_updated_at DateTime?    @db.Timestamp(6)
-  registry_expires_at DateTime?    @db.Timestamp(6)
+  registry_expires_at DateTime     @db.Timestamp(6)
   created_at          DateTime     @default(now()) @db.Timestamp(6)
   updated_at          DateTime?    @db.Timestamp(6)
   deleted_at          DateTime?    @db.Timestamp(6)
