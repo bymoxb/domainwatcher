@@ -6,7 +6,7 @@ import { GetRegistryByDomainUseCase } from "@/modules/registry/application/useca
 import { RegistryRepository } from "@/modules/registry/infra/db/RegistryRepository";
 import { RdapRegistryAdapter } from "@/modules/registry/infra/http/RdapRegistryAdapter";
 
-type Response<T> =
+export type Response<T> =
   | { ok: false, message: string }
   | { ok: true, data: T }
 
