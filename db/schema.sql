@@ -16,7 +16,7 @@ create table dw_registry(
 create table dw_watcher(
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     registry_id uuid NOT NULL,
-    mail_address varchar(128),
+    mail_address varchar(128) NOT NULL,
     notification_enabled boolean NOT NULL DEFAULT TRUE,
     --
     created_at timestamp DEFAULT now() NOT NULL,
