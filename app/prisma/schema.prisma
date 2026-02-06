@@ -23,7 +23,7 @@ model dw_registry {
 model dw_watcher {
   id                   String      @id(map: "watcher_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   registry_id          String      @db.Uuid
-  mail_address         String?     @db.VarChar(128)
+  mail_address         String      @db.VarChar(128)
   notification_enabled Boolean     @default(true)
   created_at           DateTime    @default(now()) @db.Timestamp(6)
   updated_at           DateTime?   @db.Timestamp(6)
