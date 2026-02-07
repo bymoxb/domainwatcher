@@ -10,7 +10,7 @@ export default function MyDomains() {
   const [data, searchAction, isSearching] = useActionState(myDomains, null);
 
   return (
-    <main className="h-full flex flex-col gap-4">
+    <main className="h-full flex flex-col gap-4 overflow-hidden p-2">
       <form action={searchAction} className="flex gap-2">
         <Input
           type="text"
@@ -18,6 +18,7 @@ export default function MyDomains() {
           name="email"
           placeholder="Enter an email"
           required
+          defaultValue={data?.ok == true ? data.data.email : ""}
           className="flex-1"
         />
 
@@ -32,7 +33,7 @@ export default function MyDomains() {
       </form>
 
       {
-        data?.ok == true && !data.data.length && (
+        data?.ok == true && !data.data.items.length && (
           <Detail className="">
             No domains assigned to email
           </Detail>
@@ -40,10 +41,10 @@ export default function MyDomains() {
       }
 
       {
-        (data?.ok === true && data.data.length > 0) && (
+        (data?.ok === true && data.data.items.length > 0) && (
           <section className="h-full overflow-scroll">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 m-2">
-              {data.data.map(item => (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-2">
+              {data.data.items.map(item => (
                 <DomainCard
                   key={item.id}
                   data={item.registry!}

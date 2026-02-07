@@ -32,7 +32,7 @@ export async function watchDomain(_prevState: any, formData: FormData): Promise<
   return { ok: false, message: "not implemented" };
 }
 
-export async function myDomains(_prevState: any, formData: FormData): Promise<Response<WatcherResponse[]>> {
+export async function myDomains(_prevState: any, formData: FormData): Promise<Response<{ email: string, items: WatcherResponse[] }>> {
 
   const useCase = new GetWatcherByEmailUseCase(new WatcherRepository());
 
@@ -43,6 +43,6 @@ export async function myDomains(_prevState: any, formData: FormData): Promise<Re
   }
 
   const data = await useCase.execute(email.toString());
-  return { ok: true, data: data.map(WatcherMapper.toDTO) }
+  return { ok: true, data: { email: email.toString(), items: data.map(WatcherMapper.toDTO) } }
 
 }

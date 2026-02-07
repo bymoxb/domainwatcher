@@ -17,7 +17,7 @@ export function DomainCard({
 
   return (
     <main className="grid grid-cols-2 shadow-md p-4 rounded-xl">
-      <span className="col-span-2 font-bold text-xl text-center">{data.domain}</span>
+      <span className="col-span-2 font-bold text-xl text-center font-mono">{data.domain}</span>
       <i className="col-span-2 border-t border-gray-400 my-2"></i>
       {/*  */}
       <span>Origin</span>
@@ -48,7 +48,7 @@ export function DomainCard({
       {/*  */}
       {
         actions.includes("notify") && (
-          <form className="col-span-2 flex gap-4 mt-2" action={watchAction}>
+          <form className="col-span-2 flex gap-2 mt-2" action={watchAction}>
             <Input type="hidden" name="registryId" value={data.id} />
             <Input
               id="email"

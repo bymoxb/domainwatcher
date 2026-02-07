@@ -9,7 +9,7 @@ export default function Home() {
   const [domainData, searchAction, isSearching] = useActionState(searchDomain, null);
 
   return (
-    <main className="h-full">
+    <main className="h-full gap-4 p-2">
       <form action={searchAction} className="flex gap-2">
         <Input
           type="text"
