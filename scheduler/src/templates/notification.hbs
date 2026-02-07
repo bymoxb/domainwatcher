@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #cecccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    table {
+      text-align: center;
+      background: #f3f3f3;
+      padding: 10px;
+      border-radius: 15px;
+    }
+
+    .f-text {
+      font-style: italic;
+      color: gray;
+    }
+  </style>
+</head>
+
+<body>
+  <table role="presentation" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <table role="presentation" align="center" cellspacing="0" cellpadding="0">
+          <tr>
+            <td>
+              <h1>{{domain_name}} is about to expire</h1>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p>This is a reminder that the domain <strong>{{domain_name}}</strong> is set to expire on
+                <strong>{{expiration_date}}</strong>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p>There are <strong>{{days_remaining}}</strong> days left until the domain expires.</p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p class="f-text">This is an automatically generated email.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+
+</html>
