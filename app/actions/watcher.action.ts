@@ -7,6 +7,7 @@ import { WatcherRepository } from "@/modules/watcher/infra/db/WatcherRepository"
 import { Response } from "./registry.action";
 import { WatcherMapper } from "@/modules/watcher/application/mappers/WatcherMapper";
 import { WatcherResponse } from "@/modules/watcher/application/dtos/WatcherResponse";
+import { isTrustedEmail, isValidEmail, TRUSTED_EMAIL_DOMAINS } from "@/libs/email.validation";
 
 export async function watchDomain(_prevState: any, formData: FormData): Promise<Response<any>> {
 
@@ -21,6 +22,14 @@ export async function watchDomain(_prevState: any, formData: FormData): Promise<
 
   if (!email) {
     return { ok: false, message: "email is required" }
+  }
+
+  if (!isValidEmail(email.toString())) {
+    return { ok: false, message: "email is not valid" }
+  }
+
+  if (!isTrustedEmail(email.toString())) {
+    return { ok: false, message: `email domain not trusted. Use one of: ${TRUSTED_EMAIL_DOMAINS.join(", ")}` }
   }
 
   const result = await useCase.execute({ registryId: registryId.toString(), email: email.toString() })
@@ -40,6 +49,14 @@ export async function myDomains(_prevState: any, formData: FormData): Promise<Re
 
   if (!email) {
     return { ok: false, message: "email is required" }
+  }
+
+  if (!isValidEmail(email.toString())) {
+    return { ok: false, message: "email is not valid" }
+  }
+
+  if (!isTrustedEmail(email.toString())) {
+    return { ok: false, message: `email domain not trusted. Use one of: ${TRUSTED_EMAIL_DOMAINS.join(", ")}` }
   }
 
   const data = await useCase.execute(email.toString());

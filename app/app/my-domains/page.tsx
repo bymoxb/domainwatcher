@@ -33,6 +33,14 @@ export default function MyDomains() {
       </form>
 
       {
+        data?.ok == false && (
+          <Detail className="">
+            {data.message}
+          </Detail>
+        )
+      }
+
+      {
         data?.ok == true && !data.data.items.length && (
           <Detail className="">
             No domains assigned to email
