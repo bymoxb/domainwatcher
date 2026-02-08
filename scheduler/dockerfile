@@ -1,0 +1,43 @@
+# ----------------------------------------------------------------------------------------
+FROM node:20-alpine AS build
+
+WORKDIR /usr/src/app
+
+RUN npm install -g pnpm@latest
+
+COPY package*.json pnpm-lock.yaml ./
+
+RUN pnpm install
+
+COPY . .
+
+RUN pnpm run build
+
+# ----------------------------------------------------------------------------------------
+FROM node:20-alpine AS modules
+
+WORKDIR /usr/src/app
+
+RUN npm install -g pnpm@latest
+
+COPY package*.json pnpm-lock.yaml ./
+
+RUN pnpm install --production
+
+# ----------------------------------------------------------------------------------------
+FROM node:20-alpine AS runtime
+
+WORKDIR /usr/src/app
+
+COPY --from=build /usr/src/app/dist /usr/src/app/dist
+COPY --from=modules /usr/src/app/node_modules /usr/src/app/node_modules
+
+ENV DATABASE_URL=${DATABASE_URL}
+ENV MAIL_PORT=${MAIL_PORT}
+ENV MAIL_HOST=${MAIL_HOST}
+ENV MAIL_USER=${MAIL_USER}
+ENV MAIL_PASSWORD=${MAIL_PASSWORD}
+ENV MAIL_FROM=${MAIL_FROM}
+ENV DW_EXPIRATION_THRESHOLD=${DW_EXPIRATION_THRESHOLD}
+
+CMD ["node", "dist/src/main.js"]

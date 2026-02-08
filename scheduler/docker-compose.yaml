@@ -1,0 +1,14 @@
+services:
+  dw_scheduler:
+    image: bymoxb/dw-scheduler
+    container_name: dw-scheduler
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+      - DATABASE_URL=${DATABASE_URL}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_USER=${MAIL_USER}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_FROM=${MAIL_FROM}
+      - DW_EXPIRATION_THRESHOLD=${DW_EXPIRATION_THRESHOLD}

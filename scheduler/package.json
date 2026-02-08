@@ -5,6 +5,7 @@
   "description": "Nest TypeScript starter repository",
   "license": "MIT",
   "scripts": {
+    "prebuild": "npx prisma generate",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -31,6 +32,7 @@
     "@nestjs/schedule": "6.1.1",
     "@prisma/adapter-pg": "7.3.0",
     "@prisma/client": "7.3.0",
+    "dotenv": "17.2.4",
     "handlebars": "4.7.8",
     "nodemailer": "8.0.1",
     "pg": "8.18.0",
