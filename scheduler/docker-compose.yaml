@@ -1,6 +1,6 @@
 services:
   dw_scheduler:
-    image: bymoxb/dw-scheduler
+    image: bymoxb/dw-scheduler:latest
     container_name: dw-scheduler
     restart: unless-stopped
     environment:
@@ -11,4 +11,5 @@ services:
       - MAIL_USER=${MAIL_USER}
       - MAIL_PASSWORD=${MAIL_PASSWORD}
       - MAIL_FROM=${MAIL_FROM}
+      - MAIL_TO=${MAIL_TO}
       - DW_EXPIRATION_THRESHOLD=${DW_EXPIRATION_THRESHOLD}
