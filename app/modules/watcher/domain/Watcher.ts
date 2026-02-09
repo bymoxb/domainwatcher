@@ -5,7 +5,7 @@ interface IWatcherConstructor {
   registryId: string;
   email: string;
   notificationEnabled?: boolean;
-  registry?: Registry;
+  registry?: Registry | null;
 }
 
 export class Watcher {

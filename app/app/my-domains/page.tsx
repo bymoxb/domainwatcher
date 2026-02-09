@@ -55,9 +55,8 @@ export default function MyDomains() {
               {data.data.items.map(item => (
                 <DomainCard
                   key={item.id}
-                  data={item.registry!}
+                  data={item}
                   actions={["actions"]}
-                  isSubscribed={item.notificationEnabled}
                 />
               ))}
             </div>

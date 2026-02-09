@@ -9,7 +9,8 @@ export class WatcherMapper {
       email: domain.getEmail,
       registryId: domain.getRegistryId,
       notificationEnabled: domain.getNotificationEnabled,
-      registry: domain.getRegistry ? RegistryMapper.toDTO(domain.getRegistry) : null
+      registry: domain.getRegistry ? RegistryMapper.toDTO(domain.getRegistry) : null,
+      type: "watcher",
     }
   }
 }

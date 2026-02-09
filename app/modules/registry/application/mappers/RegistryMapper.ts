@@ -10,6 +10,7 @@ export class RegistryMapper {
       registryExpiresAt: domain.getRegistryExpiresAt.toString(),
       registryCreatedAt: domain.getRegistryCreatedAt.toString(),
       registryUpdatedAt: domain.getRegistryUpdatedAt ? domain.getRegistryUpdatedAt.toString() : null,
+      type: "registry",
     }
   }
 }

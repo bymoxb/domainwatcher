@@ -5,4 +5,6 @@ export interface RegistryResponse {
   registryCreatedAt: string,
   registryUpdatedAt?: string | null,
   registryExpiresAt: string,
+  //
+  type: "registry",
 }
