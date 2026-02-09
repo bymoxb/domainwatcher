@@ -15,7 +15,7 @@ export default function Home() {
           type="text"
           id="domain"
           name="domain"
-          placeholder="Enter a domain"
+          placeholder="Enter a domain name"
           required
           className="flex-1"
         />
@@ -24,25 +24,17 @@ export default function Home() {
           disabled={isSearching}
           loading={isSearching}
           // className="border px-2 py-1 rounded-xl cursor-pointer"
-          label={isSearching ? "Searching" : "Search"}
+          label={isSearching ? "Searching..." : "Search"}
         />
-
-
       </form>
 
-      {
-        domainData?.ok == false && (
-          <span>Error: {domainData.message}</span>
-        )
-      }
+      {domainData?.ok == false && <span>Error: {domainData.message}</span>}
 
-      {
-        domainData?.ok && (
-          <main className="mt-4 w-fit">
-            <DomainCard data={domainData.data} actions={["notify"]} />
-          </main>
-        )
-      }
+      {domainData?.ok && (
+        <main className="mt-4 w-fit">
+          <DomainCard data={domainData.data} actions={["notify"]} />
+        </main>
+      )}
     </main>
   );
 }

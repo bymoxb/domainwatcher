@@ -1,4 +1,4 @@
-import { changeSuscription, watchDomain } from "@/actions/watcher.action";
+import { changeSubscription, watchDomain } from "@/actions/watcher.action";
 import { RegistryResponse } from "@/modules/registry/application/dtos/RegistryResponse";
 import { WatcherResponse } from "@/modules/watcher/application/dtos/WatcherResponse";
 import { useActionState, useOptimistic } from "react";
@@ -39,20 +39,20 @@ export function DomainCard({
       {/* <span>Origin</span>
       <span>{registry.origin}</span> */}
       {/*  */}
-      <span>Created</span>
+      <span>Created on</span>
       <span>{new Date(registry.registryCreatedAt).toLocaleDateString()}</span>
       {/*  */}
-      <span>Updated</span>
+      <span>Last updated</span>
       <span>
         {registry.registryUpdatedAt
           ? new Date(registry.registryUpdatedAt).toLocaleDateString()
           : ""}
       </span>
       {/*  */}
-      <span>Expires</span>
+      <span>Expires on</span>
       <span>{new Date(registry.registryExpiresAt).toLocaleDateString()}</span>
       {/*  */}
-      <span>Days left</span>
+      <span>Expires in</span>
       <span>{calcDaysLeft(new Date(registry.registryExpiresAt))}</span>
       {/*  */}
       {/* {watcher != null && (
@@ -71,15 +71,15 @@ export function DomainCard({
             id="email"
             name="email"
             type="email"
-            placeholder="Enter an email"
-            className="border flex-1"
+            placeholder="Enter your email"
+            className="flex-1"
             required
           />
           <Button
             type="submit"
             disabled={isSubmitting}
             loading={isSubmitting}
-            label={isSubmitting ? "Saving" : "Notifyme"}
+            label={isSubmitting ? "Please wait..." : "Get notified"}
           />
         </form>
       )}
@@ -113,7 +113,7 @@ export function DomainCard({
 }
 
 function ActionButtons({ watcher }: { watcher: WatcherResponse }) {
-  const [state, action, isSubmitting] = useActionState(changeSuscription, {
+  const [state, action, isSubmitting] = useActionState(changeSubscription, {
     ok: true,
     data: watcher,
   });
@@ -121,10 +121,10 @@ function ActionButtons({ watcher }: { watcher: WatcherResponse }) {
   const isSubscribed = state.ok && state.data.notificationEnabled;
 
   const buttonLabel = isSubmitting
-    ? "Updating..."
+    ? "Please wait..."
     : isSubscribed
-    ? "Unsubscribe"
-    : "Subscribe";
+    ? "Stop notifications"
+    : "Get notified";
 
   return (
     <form action={action}>

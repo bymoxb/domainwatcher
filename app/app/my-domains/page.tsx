@@ -16,7 +16,7 @@ export default function MyDomains() {
           type="text"
           id="email"
           name="email"
-          placeholder="Enter an email"
+          placeholder="Enter your email"
           required
           defaultValue={data?.ok == true ? data.data.email : ""}
           className="flex-1"
@@ -27,44 +27,26 @@ export default function MyDomains() {
           disabled={isSearching}
           loading={isSearching}
           className=""
-          label={isSearching ? "Searching" : "Search"}
+          label={isSearching ? "Searching..." : "Search"}
         />
-
       </form>
 
-      {
-        data?.ok == false && (
-          <Detail className="">
-            {data.message}
-          </Detail>
-        )
-      }
+      {data?.ok == false && <Detail className="">{data.message}</Detail>}
 
-      {
-        data?.ok == true && !data.data.items.length && (
-          <Detail className="">
-            No domains assigned to email
-          </Detail>
-        )
-      }
+      {data?.ok == true && !data.data.items.length && (
+        <Detail className="">No domains found for this email</Detail>
+      )}
 
-      {
-        (data?.ok === true && data.data.items.length > 0) && (
-          <section className="h-full overflow-scroll">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-2">
-              {data.data.items.map(item => (
-                <DomainCard
-                  key={item.id}
-                  data={item}
-                  actions={["actions"]}
-                />
-              ))}
-            </div>
-          </section>
-        )
-      }
+      {data?.ok === true && data.data.items.length > 0 && (
+        <section className="h-full overflow-scroll">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-2">
+            {data.data.items.map((item) => (
+              <DomainCard key={item.id} data={item} actions={["actions"]} />
+            ))}
+          </div>
+        </section>
+      )}
       {/* <pre>{JSON.stringify({ domainData: data }, null, 2)}</pre> */}
-
     </main>
   );
 }

@@ -21,7 +21,7 @@ export async function searchDomain(_prevState: any, formData: FormData): Promise
   const data = await useCase.execute(String(formData.get("domain") ?? ""));
 
   if (!data) {
-    return { ok: false, message: "Not Found" }
+    return { ok: false, message: "No results found" };
   }
 
   return { ok: true, data: RegistryMapper.toDTO(data) }

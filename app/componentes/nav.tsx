@@ -4,13 +4,13 @@ import Link from "next/link";
 const LINKS = [
   {
     path: "/",
-    text: "Home"
+    text: "Home",
   },
   {
     path: "/my-domains",
-    text: "My domains"
+    text: "My Domains",
   },
-]
+];
 
 export default function Nav() {
   return (

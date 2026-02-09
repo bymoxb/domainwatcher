@@ -12,6 +12,9 @@ import { GetWatcherByIdUseCase } from "@/modules/watcher/application/usecases/Ge
 import { ActivateNotificationUseCase } from "@/modules/watcher/application/usecases/ActivateNotificationUseCase";
 import { DeactivateNotificationUseCase } from "@/modules/watcher/application/usecases/DeactivateNotificationUseCase";
 
+/**
+ * Watches a domain by email.
+ */
 export async function watchDomain(
   _prevState: any,
   formData: FormData
@@ -25,21 +28,21 @@ export async function watchDomain(
   const email = formData.get("email");
 
   if (!registryId) {
-    return { ok: false, message: "registry is required" };
+    return { ok: false, message: "Registry is required" };
   }
 
   if (!email) {
-    return { ok: false, message: "email is required" };
+    return { ok: false, message: "Email is required" };
   }
 
   if (!isValidEmail(email.toString())) {
-    return { ok: false, message: "email is not valid" };
+    return { ok: false, message: "Email is invalid" };
   }
 
   if (!isTrustedEmail(email.toString())) {
     return {
       ok: false,
-      message: `email domain not trusted. Use one of: ${TRUSTED_EMAIL_DOMAINS.join(
+      message: `Email domain not trusted. Use one of the following: ${TRUSTED_EMAIL_DOMAINS.join(
         ", "
       )}`,
     };
@@ -51,12 +54,18 @@ export async function watchDomain(
   });
 
   if (!result) {
-    return { ok: false, message: "some problem to save the notification" };
+    return {
+      ok: false,
+      message: "There was a problem saving the notification",
+    };
   }
 
-  return { ok: false, message: "not implemented" };
+  return { ok: false, message: "Feature not implemented yet" };
 }
 
+/**
+ * Returns all domains associated with a given email.
+ */
 export async function myDomains(
   _prevState: any,
   formData: FormData
@@ -66,17 +75,17 @@ export async function myDomains(
   const email = formData.get("email");
 
   if (!email) {
-    return { ok: false, message: "email is required" };
+    return { ok: false, message: "Email is required" };
   }
 
   if (!isValidEmail(email.toString())) {
-    return { ok: false, message: "email is not valid" };
+    return { ok: false, message: "Email is invalid" };
   }
 
   if (!isTrustedEmail(email.toString())) {
     return {
       ok: false,
-      message: `email domain not trusted. Use one of: ${TRUSTED_EMAIL_DOMAINS.join(
+      message: `Email domain not trusted. Use one of the following: ${TRUSTED_EMAIL_DOMAINS.join(
         ", "
       )}`,
     };
@@ -89,25 +98,26 @@ export async function myDomains(
   };
 }
 
-export async function changeSuscription(
+/**
+ * Toggles notifications for a domain.
+ */
+export async function changeSubscription(
   _prevState: any,
   formData: FormData
 ): Promise<Response<WatcherResponse>> {
   const rawData = formData.get("watcherId");
   if (!rawData) {
-    return { ok: false, message: "a domain is required" };
+    return { ok: false, message: "A domain is required" };
   }
 
   const watcherId = rawData.toString();
-
   const wRepo = new WatcherRepository();
-
   const getByIdUseCase = new GetWatcherByIdUseCase(wRepo);
 
   let watcher = await getByIdUseCase.execute(watcherId);
 
   if (!watcher) {
-    return { ok: false, message: "the domain not exists" };
+    return { ok: false, message: "The domain does not exist" };
   }
 
   const useCase = watcher.getNotificationEnabled
@@ -117,7 +127,7 @@ export async function changeSuscription(
   watcher = await useCase.execute(watcherId);
 
   if (!watcher) {
-    return { ok: false, message: "the domain not exists" };
+    return { ok: false, message: "The domain does not exist" };
   }
 
   return { ok: true, data: WatcherMapper.toDTO(watcher) };
