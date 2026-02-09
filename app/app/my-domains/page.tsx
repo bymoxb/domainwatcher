@@ -33,10 +33,16 @@ export default function MyDomains() {
         />
       </form>
 
-      {data?.ok == false && <Detail className="">{data.message}</Detail>}
+      {data?.ok == false && (
+        <Detail title="Error" type="danger" className="mt-2">
+          {data.message}
+        </Detail>
+      )}
 
       {data?.ok == true && !data.data.items.length && (
-        <Detail className="">No domains found for this email</Detail>
+        <Detail title="Alert" type="warning" className="mt-2">
+          No domains found for this email
+        </Detail>
       )}
 
       {data?.ok === true && data.data.items.length > 0 && (
