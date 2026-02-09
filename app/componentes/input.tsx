@@ -11,9 +11,12 @@ const Input: React.FunctionComponent<InputProps> = ({
   return (
     <input
       {...props}
-      className={classNames("border rounded px-2 py-1", className)}
+      className={classNames(
+        "border rounded shadow-sm focus:ring-1 px-2 py-1",
+        className
+      )}
     />
-  )
+  );
 }
 
 export default Input;

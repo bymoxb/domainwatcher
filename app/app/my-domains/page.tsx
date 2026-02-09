@@ -11,7 +11,10 @@ export default function MyDomains() {
 
   return (
     <main className="h-full flex flex-col gap-4 overflow-hidden p-2">
-      <form action={searchAction} className="flex gap-2">
+      <form
+        action={searchAction}
+        className="grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2"
+      >
         <Input
           type="text"
           id="email"
@@ -19,14 +22,13 @@ export default function MyDomains() {
           placeholder="Enter your email"
           required
           defaultValue={data?.ok == true ? data.data.email : ""}
-          className="flex-1"
+          className="sm:col-span-2 md:col-span-3 lg:col-span-4"
         />
 
         <Button
           type="submit"
           disabled={isSearching}
           loading={isSearching}
-          className=""
           label={isSearching ? "Searching..." : "Search"}
         />
       </form>

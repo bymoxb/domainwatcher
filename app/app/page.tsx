@@ -10,20 +10,22 @@ export default function Home() {
 
   return (
     <main className="h-full gap-4 p-2">
-      <form action={searchAction} className="flex gap-2">
+      <form
+        action={searchAction}
+        className="grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2"
+      >
         <Input
           type="text"
           id="domain"
           name="domain"
           placeholder="Enter a domain name"
           required
-          className="flex-1"
+          className="sm:col-span-2 md:col-span-3 lg:col-span-4"
         />
         <Button
           type="submit"
           disabled={isSearching}
           loading={isSearching}
-          // className="border px-2 py-1 rounded-xl cursor-pointer"
           label={isSearching ? "Searching..." : "Search"}
         />
       </form>

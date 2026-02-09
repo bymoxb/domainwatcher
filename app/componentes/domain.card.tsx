@@ -1,9 +1,11 @@
-import { changeSubscription, watchDomain } from "@/actions/watcher.action";
+import { watchDomain } from "@/actions/watcher.action";
 import { RegistryResponse } from "@/modules/registry/application/dtos/RegistryResponse";
 import { WatcherResponse } from "@/modules/watcher/application/dtos/WatcherResponse";
 import { useActionState, useOptimistic } from "react";
+import ActionButtons from "./action.button";
 import Button from "./button";
 import Input from "./input";
+import LinkButton from "./link.button";
 
 export function DomainCard({
   data,
@@ -30,7 +32,7 @@ export function DomainCard({
   }
 
   return (
-    <main className="grid grid-cols-2 shadow-md p-4 rounded-xl">
+    <main className="grid grid-cols-2 gap-x-2 shadow-md p-4 rounded-xl">
       <span className="col-span-2 font-bold text-xl text-center font-mono">
         {registry.domain}
       </span>
@@ -65,7 +67,10 @@ export function DomainCard({
       {/*  */}
       {/*  */}
       {actions.includes("notify") && (
-        <form className="col-span-2 flex gap-2 mt-2" action={watchAction}>
+        <form
+          className="col-span-2 w-full grid sm:grid-cols-2 gap-2 mt-2"
+          action={watchAction}
+        >
           <Input type="hidden" name="registryId" value={data.id} />
           <Input
             id="email"
@@ -85,63 +90,22 @@ export function DomainCard({
       )}
       {
         <div className="col-span-2 flex items-center text-center my-2 py-2 border-y border-gray-400">
-          <a
-            className="flex-1"
+          <LinkButton
             href={`https://client.rdap.org/?type=domain&object=${registry.domain}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            RDAP
-          </a>
-          <a
-            className="flex-1"
+            text="RDAP"
+          />
+          <LinkButton
+            text="WHOIS"
             href={`https://who.is/whois/${registry.domain}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            WHOIS
-          </a>
+          />
         </div>
       }
       {actions.includes("actions") && watcher != null && (
-        <div className="col-span-2 flex items-center mx-auto my-2">
+        <div className="col-span-2 w-full my-2">
           <ActionButtons watcher={watcher} />
         </div>
       )}
     </main>
-  );
-}
-
-function ActionButtons({ watcher }: { watcher: WatcherResponse }) {
-  const [state, action, isSubmitting] = useActionState(changeSubscription, {
-    ok: true,
-    data: watcher,
-  });
-
-  const isSubscribed = state.ok && state.data.notificationEnabled;
-
-  const buttonLabel = isSubmitting
-    ? "Please wait..."
-    : isSubscribed
-    ? "Stop notifications"
-    : "Get notified";
-
-  return (
-    <form action={action}>
-      <Input
-        hidden
-        name="watcherId"
-        value={state.ok ? state.data.id : ""}
-        readOnly
-      />
-
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        loading={isSubmitting}
-        label={buttonLabel}
-      />
-    </form>
   );
 }
 
