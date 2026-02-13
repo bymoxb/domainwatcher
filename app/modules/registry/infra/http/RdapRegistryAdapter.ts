@@ -1,47 +1,50 @@
 import { IRegistryPort } from "../../domain/IRegistryPort";
 import { Registry } from "../../domain/Registry";
+import { HttpClientPort } from "./http.client";
 
 export class RdapRegistryAdapter implements IRegistryPort {
+  constructor(private readonly http: HttpClientPort) {}
+
   public async searchByDomain(domain: string): Promise<Registry | null> {
-    try {
-      const url = new URL('https://rdap.org/domain/:domain');
+    const url = new URL(`https://rdap.org/domain/${domain}`);
 
-      console.log(`Fetching "${domain}" from "${url.host}"`);
+    console.log(`Fetching "${domain}" from "${url.host}"`);
 
-      url.pathname = url.pathname.replace(':domain', domain);
-      const raw = await fetch(url);
+    const response = await this.http.get<RDAPResponse>(url);
 
-      if (!raw.ok) {
-        console.error('consulta con rdap fallo');
-        console.error(raw.status);
-        return null;
-      }
-
-      const { events = [], ...object }: RDAPResponse = await raw.json();
-
-      const registration = events.find((e) => e.eventAction === 'registration')?.eventDate;
-      const expiration = events.find((e) => e.eventAction === 'expiration')?.eventDate;
-      const changed = events.find((e) => e.eventAction === 'last changed')?.eventDate;
-
-      if (!registration) {
-        throw new Error("registration not found");
-      }
-
-      if (!expiration) {
-        throw new Error("expiration not found");
-      }
-
-      return new Registry({
-        domain: object.unicodeName ?? object.ldhName,
-        registryCreatedAt: new Date(registration),
-        registryExpiresAt: new Date(expiration),
-        registryUpdatedAt: changed ? new Date(changed) : null,
-        origin: url.origin,
-      });
-    } catch (error) {
-      console.error(`Error al obtener (${domain}) informacion: ${error}`);
+    if (!response.ok) {
+      console.error("Consulta con RDAP falló: " + response.message);
       return null;
     }
+
+    const { events = [], ...object } = response.data;
+
+    const registration = events.find(
+      (e) => e.eventAction === "registration"
+    )?.eventDate;
+
+    const expiration = events.find(
+      (e) => e.eventAction === "expiration"
+    )?.eventDate;
+
+    const changed = events.find(
+      (e) => e.eventAction === "last changed"
+    )?.eventDate;
+
+    if (!registration || !expiration) {
+      console.error(
+        `Fechas críticas para${domain} no encontradas en la respuesta RDAP`
+      );
+      return null;
+    }
+
+    return new Registry({
+      domain: object.unicodeName ?? object.ldhName,
+      registryCreatedAt: new Date(registration),
+      registryExpiresAt: new Date(expiration),
+      registryUpdatedAt: changed ? new Date(changed) : null,
+      origin: url.origin,
+    });
   }
 }
 
