@@ -10,6 +10,7 @@ export default function LinkButton({
       className="inline-flex flex-1 items-center justify-center cursor-pointer hover:underline"
       target="_blank"
       rel="noopener noreferrer"
+      href={href}
     >
       {text}
       <svg
