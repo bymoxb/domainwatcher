@@ -1,5 +1,6 @@
-import { Registry } from './Registry';
+import { Domain } from "./Domain";
+import { Registry } from "./Registry";
 
 export interface IRegistryPort {
-  searchByDomain(domain: string): Promise<Registry | null>;
+  searchByDomain(domain: Domain): Promise<Registry | null>;
 }

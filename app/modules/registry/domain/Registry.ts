@@ -1,10 +1,12 @@
+import { Domain } from "@/modules/registry/domain/Domain";
+
 interface IRegistryConstructor {
   id?: string;
-  domain: string;
+  domain: Domain;
   origin: string;
-  registryCreatedAt: Date,
-  registryUpdatedAt?: Date | null,
-  registryExpiresAt: Date,
+  registryCreatedAt: Date;
+  registryUpdatedAt?: Date | null;
+  registryExpiresAt: Date;
   // audit
   createdAt?: Date;
   updatedAt?: Date | null;
@@ -12,7 +14,7 @@ interface IRegistryConstructor {
 
 export class Registry {
   private id: string;
-  private domain: string;
+  private domain: Domain;
   private origin: string;
   private registryCreatedAt: Date;
   private registryUpdatedAt?: Date | null;
@@ -23,7 +25,7 @@ export class Registry {
 
   constructor(args: IRegistryConstructor) {
     this.id = args?.id ? args.id : crypto.randomUUID();
-    this.domain = args.domain.toLowerCase();
+    this.domain = args.domain;
     this.origin = args.origin.toLowerCase();
     this.registryCreatedAt = args?.registryCreatedAt;
     this.registryUpdatedAt = args?.registryUpdatedAt;
@@ -37,7 +39,7 @@ export class Registry {
     return this.id;
   }
 
-  public get getDomain(): string {
+  public get getDomain(): Domain {
     return this.domain;
   }
 

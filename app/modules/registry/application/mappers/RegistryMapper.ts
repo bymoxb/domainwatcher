@@ -5,12 +5,14 @@ export class RegistryMapper {
   public static toDTO(domain: Registry): RegistryResponse {
     return {
       id: domain.getId,
-      domain: domain.getDomain,
+      domain: domain.getDomain.getValue,
       origin: domain.getOrigin,
       registryExpiresAt: domain.getRegistryExpiresAt.toString(),
       registryCreatedAt: domain.getRegistryCreatedAt.toString(),
-      registryUpdatedAt: domain.getRegistryUpdatedAt ? domain.getRegistryUpdatedAt.toString() : null,
+      registryUpdatedAt: domain.getRegistryUpdatedAt
+        ? domain.getRegistryUpdatedAt.toString()
+        : null,
       type: "registry",
-    }
+    };
   }
 }

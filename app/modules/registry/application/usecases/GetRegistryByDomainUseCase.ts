@@ -1,15 +1,15 @@
+import { Domain } from "../../domain/Domain";
 import { IRegistryPort } from "../../domain/IRegistryPort";
 import { IRegistryRepository } from "../../domain/IRegistryRepository";
 import { Registry } from "../../domain/Registry";
 
-
 export class GetRegistryByDomainUseCase {
   constructor(
     private readonly registryRepository: IRegistryRepository,
-    private readonly registries: IRegistryPort[],
-  ) { }
+    private readonly registries: IRegistryPort[]
+  ) {}
 
-  public async execute(domain: string) {
+  public async execute(domain: Domain) {
     let registry: Registry | null = null;
 
     registry = await this.registryRepository.getByDomain(domain);
@@ -31,6 +31,5 @@ export class GetRegistryByDomainUseCase {
     }
 
     return registry;
-
   }
 }

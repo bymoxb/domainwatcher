@@ -1,3 +1,4 @@
+import { Domain } from "../../domain/Domain";
 import { IRegistryPort } from "../../domain/IRegistryPort";
 import { Registry } from "../../domain/Registry";
 import { HttpClientPort } from "./http.client";
@@ -8,8 +9,10 @@ export class WhoisJsonAdapter implements IRegistryPort {
     private readonly API_KEY: string
   ) {}
 
-  async searchByDomain(domain: string): Promise<Registry | null> {
+  async searchByDomain(value: Domain): Promise<Registry | null> {
     const url = new URL("https://whoisjson.com/api/v1/whois");
+    const domain = value.getValue;
+
     url.searchParams.set("domain", domain);
 
     const response = await this.http.get<WhoisJsonResponse>(url, {
@@ -31,7 +34,7 @@ export class WhoisJsonAdapter implements IRegistryPort {
     }
 
     return new Registry({
-      domain: data.name ?? data.idnName,
+      domain: new Domain(data.name ?? data.idnName),
       registryCreatedAt: new Date(data.created),
       registryExpiresAt: new Date(data.expires),
       registryUpdatedAt: data.changed

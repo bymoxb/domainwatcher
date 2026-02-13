@@ -3,6 +3,7 @@
 import { RegistryResponse } from "@/modules/registry/application/dtos/RegistryResponse";
 import { RegistryMapper } from "@/modules/registry/application/mappers/RegistryMapper";
 import { GetRegistryByDomainUseCase } from "@/modules/registry/application/usecases/GetRegistryByDomainUseCase";
+import { Domain } from "@/modules/registry/domain/Domain";
 import { IRegistryPort } from "@/modules/registry/domain/IRegistryPort";
 import { RegistryRepository } from "@/modules/registry/infra/db/RegistryRepository";
 import { HttpClient } from "@/modules/registry/infra/http/http.client";
@@ -29,12 +30,21 @@ export async function searchDomain(
   _prevState: any,
   formData: FormData
 ): Promise<Response<RegistryResponse>> {
+  const domainValue = String(formData.get("domain") ?? "");
+  let domain: Domain | null = null;
+
+  try {
+    domain = new Domain(domainValue);
+  } catch (error: any) {
+    return { ok: false, message: error?.message ?? "Invalid format" };
+  }
+
   const useCase = new GetRegistryByDomainUseCase(
     new RegistryRepository(),
     adapters
   );
 
-  const data = await useCase.execute(String(formData.get("domain") ?? ""));
+  const data = await useCase.execute(domain);
 
   if (!data) {
     return { ok: false, message: "No results found" };

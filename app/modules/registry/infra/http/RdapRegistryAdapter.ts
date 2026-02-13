@@ -1,3 +1,4 @@
+import { Domain } from "../../domain/Domain";
 import { IRegistryPort } from "../../domain/IRegistryPort";
 import { Registry } from "../../domain/Registry";
 import { HttpClientPort } from "./http.client";
@@ -5,7 +6,9 @@ import { HttpClientPort } from "./http.client";
 export class RdapRegistryAdapter implements IRegistryPort {
   constructor(private readonly http: HttpClientPort) {}
 
-  public async searchByDomain(domain: string): Promise<Registry | null> {
+  public async searchByDomain(value: Domain): Promise<Registry | null> {
+    const domain = value.getValue;
+
     const url = new URL(`https://rdap.org/domain/${domain}`);
 
     console.log(`Fetching "${domain}" from "${url.host}"`);
@@ -39,7 +42,7 @@ export class RdapRegistryAdapter implements IRegistryPort {
     }
 
     return new Registry({
-      domain: object.unicodeName ?? object.ldhName,
+      domain: new Domain(object.unicodeName ?? object.ldhName),
       registryCreatedAt: new Date(registration),
       registryExpiresAt: new Date(expiration),
       registryUpdatedAt: changed ? new Date(changed) : null,
