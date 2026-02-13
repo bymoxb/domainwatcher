@@ -2,6 +2,7 @@ import prisma from "@/modules/shared/infra/prisma";
 import { IWatcherRepository } from "../../domain/IWatcherRepository";
 import { Watcher } from "../../domain/Watcher";
 import { Registry } from "@/modules/registry/domain/Registry";
+import { Domain } from "@/modules/registry/domain/Domain";
 
 export class WatcherRepository implements IWatcherRepository {
   async getByIdAndEmail(id: string, email: string): Promise<Watcher | null> {
@@ -61,7 +62,7 @@ export class WatcherRepository implements IWatcherRepository {
     if (entity?.dw_registry) {
       registry = new Registry({
         id: entity.dw_registry.id,
-        domain: entity.dw_registry.domain,
+        domain: new Domain(entity.dw_registry.domain),
         origin: entity.dw_registry.origin,
         registryExpiresAt: entity.dw_registry.registry_expires_at,
         registryCreatedAt: entity.dw_registry.registry_created_at,
