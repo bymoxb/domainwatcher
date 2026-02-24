@@ -1,5 +1,5 @@
-export function calcDaysLeft(limit: Date): string {
+export function calcDaysLeft(limit: Date): number {
   const now = new Date();
   const diff = limit.getTime() - now.getTime();
-  return String(Math.round(diff / (1000 * 60 * 60 * 24)))
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }

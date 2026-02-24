@@ -1,61 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 
-<head>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #cecccc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #cecccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
 
-    table {
-      text-align: center;
-      background: #f3f3f3;
-      padding: 10px;
-      border-radius: 15px;
-    }
+      table {
+        text-align: center;
+        background: #f3f3f3;
+        padding: 20px;
+        border-radius: 15px;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
 
-    .f-text {
-      font-style: italic;
-      color: gray;
-    }
-  </style>
-</head>
+      .f-text {
+        font-style: italic;
+        color: gray;
+        font-size: 0.9em;
+        margin-top: 15px;
+      }
 
-<body>
-  <table role="presentation" cellspacing="0" cellpadding="0">
-    <tr>
-      <td>
-        <table role="presentation" align="center" cellspacing="0" cellpadding="0">
-          <tr>
-            <td>
-              <h1>{{domain_name}} is about to expire</h1>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p>This is a reminder that the domain <strong>{{domain_name}}</strong> is set to expire on
-                <strong>{{expiration_date}}</strong>
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p>There are <strong>{{days_remaining}}</strong> days left until the domain expires.</p>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p class="f-text">This is an automatically generated email.</p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
+      .warning {
+        color: #e67e22;
+        font-weight: bold;
+      }
+
+      .expired {
+        color: red;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <table role='presentation' align='center' cellspacing='0' cellpadding='0'>
+      <tr>
+        <td>
+          {{#if is_expired}}
+            <h1 class='expired'>{{domain_name}} has expired</h1>
+          {{else}}
+            <h1 class='warning'>{{domain_name}} is about to expire</h1>
+          {{/if}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{#if is_expired}}
+            <p>The domain
+              <strong>{{domain_name}}</strong>
+              expired on
+              <strong>{{expiration_date}}</strong>.</p>
+          {{else}}
+            <p>This is a reminder that the domain
+              <strong>{{domain_name}}</strong>
+              is set to expire on
+              <strong>{{expiration_date}}</strong>.</p>
+            <p>There are
+              <strong>{{days_remaining}}</strong>
+              days left until the domain expires.</p>
+          {{/if}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class='f-text'>
+            This is an automatically generated email. You can disable these
+            notifications at any time by clicking
+            <a
+              href='{{app_domain}}/my-domains?domain={{domain_name}}'
+              target='_blank'
+            >here</a>.
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
 
 </html>

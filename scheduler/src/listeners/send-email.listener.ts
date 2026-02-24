@@ -38,6 +38,7 @@ export class SendMailListener implements EventHandles {
     let emailSent = 0;
     let totalEmails = 0;
     const toEmail = this.config.get<string>('MAIL_TO', '');
+    const appDomain = this.config.get<string>('DW_APP_DOMAIN', '');
 
     for (const item of result) {
       try {
@@ -47,17 +48,24 @@ export class SendMailListener implements EventHandles {
         const days_remaining = calcDaysLeft(
           item.dw_registry.registry_expires_at,
         );
+
         const emails = item.watchers.map((item) => item.mail_address);
+        const is_expired = days_remaining <= 0;
+        const subject = is_expired
+          ? `DomainWatcher: ${domain_name} has expired`
+          : `DomainWatcher: ${domain_name} expiring soon`;
 
         await this.mailerService.sendMail({
           to: toEmail,
           bcc: emails,
-          subject: `DomainWatcher: ${domain_name} expiring soon`,
+          subject,
           template: 'notification',
           context: {
             domain_name,
             expiration_date,
             days_remaining,
+            is_expired,
+            app_domain: appDomain,
           },
         });
 
