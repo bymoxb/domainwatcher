@@ -5,8 +5,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { join } from 'path';
+import { RegistryListener } from './listeners/registry.listener';
 import { SendMailListener } from './listeners/send-email.listener';
 import { PrismaService } from './prisma.service';
+import { RegistryModule } from './registry.listener.module';
 import { TaskService } from './task.service';
 
 @Module({
@@ -39,7 +41,8 @@ import { TaskService } from './task.service';
         };
       },
     }),
+    RegistryModule,
   ],
-  providers: [TaskService, PrismaService, SendMailListener],
+  providers: [TaskService, PrismaService, SendMailListener, RegistryListener],
 })
 export class AppModule {}
