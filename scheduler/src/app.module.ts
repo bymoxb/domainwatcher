@@ -2,8 +2,10 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { join } from 'path';
+import { SendMailListener } from './listeners/send-email.listener';
 import { PrismaService } from './prisma.service';
 import { TaskService } from './task.service';
 
@@ -11,6 +13,7 @@ import { TaskService } from './task.service';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
+    EventEmitterModule.forRoot(),
     MailerModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => {
@@ -33,10 +36,10 @@ import { TaskService } from './task.service';
               strict: true,
             },
           },
-        }
+        };
       },
     }),
   ],
-  providers: [TaskService, PrismaService],
+  providers: [TaskService, PrismaService, SendMailListener],
 })
-export class AppModule { }
+export class AppModule {}

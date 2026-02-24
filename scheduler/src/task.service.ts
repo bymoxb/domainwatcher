@@ -1,10 +1,9 @@
-import { MailerService } from "@nestjs-modules/mailer";
-import { Injectable, Logger } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { calcDaysLeft } from "./libs/index.js";
-import { PrismaService } from "./prisma.service.js";
-import { GroupedResult } from "./types/index.js";
+import { PrismaService } from './prisma.service.js';
+import { AppEvents, GroupedResult } from './types/index.js';
 
 @Injectable()
 export class TaskService {
@@ -12,30 +11,27 @@ export class TaskService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly mailerService: MailerService,
     private readonly config: ConfigService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   // @Cron(CronExpression.EVERY_10_SECONDS)
   async main() {
-    this.logger.debug('Init schedule scan');
+    this.logger.debug('Init getting db results');
     const startTime = Date.now();
 
     // Get data from DB
     const result = await this.getRegistries();
 
-    // Sent mails
-    const { emailSent, totalEmails } = await this.sendMails(result);
+    this.eventEmitter.emit(AppEvents.REGISTRY_TO_EXPIRE, result);
 
-    // LOGS
     const endTime = Date.now();
 
-    this.logger.debug('Notifications sent');
+    this.logger.debug('End getting db results');
     this.logger.debug('Start time: ' + startTime);
     this.logger.debug('End time: ' + endTime);
-    this.logger.debug('Mails sent: ' + emailSent);
-    this.logger.debug('Total emails: ' + totalEmails);
+    this.logger.debug('Total records: ' + result.length);
     this.logger.debug('Execution time: ' + (endTime - startTime));
   }
 
@@ -104,44 +100,5 @@ export class TaskService {
 
     // Convertimos el objeto agrupado en un array de resultados
     return Object.values(grouped);
-  }
-
-  private async sendMails(result: GroupedResult[]) {
-    let emailSent = 0;
-    let totalEmails = 0;
-    const toEmail = this.config.get<string>('MAIL_TO', '');
-
-    for (const item of result) {
-      try {
-        const domain_name = item.dw_registry.domain;
-        const expiration_date =
-          item.dw_registry.registry_expires_at.toLocaleDateString();
-        const days_remaining = calcDaysLeft(
-          item.dw_registry.registry_expires_at,
-        );
-        const emails = item.watchers.map((item) => item.mail_address);
-
-        await this.mailerService.sendMail({
-          to: toEmail,
-          bcc: emails,
-          subject: `DomainWatcher: ${domain_name} expiring soon`,
-          template: 'notification',
-          context: {
-            domain_name,
-            expiration_date,
-            days_remaining,
-          },
-        });
-
-        emailSent++;
-        totalEmails += emails.length;
-      } catch (error) {
-        this.logger.error('Message: ' + error);
-      } finally {
-        await new Promise((r) => setTimeout(r, 1000));
-      }
-    }
-
-    return { emailSent, totalEmails };
   }
 }

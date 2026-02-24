@@ -16,3 +16,11 @@ export type GroupedResult = {
   dw_registry: DwRegistry;
   watchers: DwWatcher[];
 };
+
+export enum AppEvents {
+  REGISTRY_TO_EXPIRE = 'registry.to.expire',
+}
+
+export interface EventHandles {
+  handle(event: GroupedResult[]): Promise<void>;
+}
