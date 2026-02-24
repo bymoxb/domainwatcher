@@ -36,7 +36,7 @@ export class TaskService {
   }
 
   private async getRegistries(): Promise<GroupedResult[]> {
-    const DAYS_LEFT = +this.config.get('DW_EXPIRATION_THRESHOLD');
+    const DAYS_LEFT = +this.config.get('DW_EXPIRATION_THRESHOLD', 15);
 
     const now = new Date();
     const final = new Date(now);
