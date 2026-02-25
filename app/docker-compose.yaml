@@ -1,0 +1,10 @@
+services:
+  dw_app:
+    image: bymoxb/dw-app:latest
+    container_name: dw-app
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - WHOISJSON_API_KEY=${WHOISJSON_API_KEY}
+    ports:
+      - "3000:3000"
