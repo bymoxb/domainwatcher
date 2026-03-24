@@ -49,11 +49,11 @@ export const ActionButtons = ({ watcher }: { watcher: WatcherResponse }) => {
             <input type="hidden" name="watcherId" value={watcher.id} />
             <AlertDialog.Title>Alert</AlertDialog.Title>
             <AlertDialog.Description>
-              Are you sure to{" "}
+              Are you sure you want to{" "}
               <Strong>
                 {watcher.notificationEnabled
-                  ? "Stop notifications"
-                  : "Get notified"}
+                  ? "disable notifications"
+                  : "enable notifications"}
               </Strong>
               ?
             </AlertDialog.Description>
@@ -90,7 +90,8 @@ export const ActionButtons = ({ watcher }: { watcher: WatcherResponse }) => {
             <input type="hidden" name="watcherId" value={watcher.id} />
             <AlertDialog.Title>Alert</AlertDialog.Title>
             <AlertDialog.Description>
-              Are you sure to remove <Strong>{watcher.registry.domain}</Strong>?
+              Are you sure you want to remove{" "}
+              <Strong>{watcher?.registry?.domain}</Strong>?
             </AlertDialog.Description>
 
             <Flex gap="2" mt="4" justify="end">
@@ -130,12 +131,12 @@ export const NotifyButton = ({ registry }: { registry: RegistryResponse }) => {
     if (state.ok) {
       setMessage({
         type: "success",
-        text: "Subscription active",
+        text: "Subscription activated",
       });
     } else {
       setMessage({
         type: "error",
-        text: state.message ?? "Something went wrong",
+        text: state.message ?? "Failed to subscribe",
       });
     }
 
@@ -152,7 +153,7 @@ export const NotifyButton = ({ registry }: { registry: RegistryResponse }) => {
       </AlertDialog.Trigger>
 
       <AlertDialog.Content>
-        <AlertDialog.Title>Activate notification</AlertDialog.Title>
+        <AlertDialog.Title>Subscribe to notifications</AlertDialog.Title>
         {/* <AlertDialog.Description>Activate notification</AlertDialog.Description> */}
 
         <Inset side="x" my="5" mx="5" px="0">
