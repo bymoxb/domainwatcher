@@ -3,7 +3,7 @@
 import { myDomains } from "@/actions/watcher.action";
 import { SearchDomainsForm } from "@/modules/watcher/application/dtos/WatcherResponse";
 import { Flex } from "@radix-ui/themes";
-import { useTransition } from "react";
+import { Suspense, useTransition } from "react";
 import { Alert } from "./detail";
 import { DomainTable } from "./domain.card";
 import { MyDomainFilters } from "./filters";
@@ -19,11 +19,13 @@ export default function MyDomainsPage({
 
   return (
     <Flex gap="3" direction="column">
-      <MyDomainFilters
-        loading={loading}
-        startTransition={startTransition}
-        initialFilters={initialFilters}
-      />
+      <Suspense>
+        <MyDomainFilters
+          loading={loading}
+          startTransition={startTransition}
+          initialFilters={initialFilters}
+        />
+      </Suspense>
 
       {data?.ok == false && <Alert title="Error">{data.message}</Alert>}
 

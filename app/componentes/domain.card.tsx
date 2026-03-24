@@ -80,30 +80,32 @@ export function DomainTable({
             : data.watcher
           ).map((item, i) => (
             <Table.Row key={i}>
-              <Table.RowHeaderCell>{item.registry.domain}</Table.RowHeaderCell>
+              <Table.RowHeaderCell>
+                {item?.registry?.domain}
+              </Table.RowHeaderCell>
               <Table.Cell>
-                {safeDateString(item.registry.registryCreatedAt)}
+                {safeDateString(item?.registry?.registryCreatedAt)}
               </Table.Cell>
               <Table.Cell>
-                {safeDateString(item.registry.registryUpdatedAt)}
+                {safeDateString(item?.registry?.registryUpdatedAt)}
               </Table.Cell>
               <Table.Cell>
-                {safeDateString(item.registry.registryExpiresAt)}
+                {safeDateString(item?.registry?.registryExpiresAt)}
               </Table.Cell>
               <Table.Cell>
                 <DaysBadge
-                  days={calcDaysLeft(item.registry.registryExpiresAt)}
+                  days={calcDaysLeft(item?.registry?.registryExpiresAt)}
                 />
               </Table.Cell>
               <Table.Cell>
                 <Flex gap="1">
                   <LinkButton
-                    href={buildRdapLink(item.registry.domain)}
+                    href={buildRdapLink(item?.registry?.domain)}
                     text="RDAP"
                   />
                   <LinkButton
                     text="WHOIS"
-                    href={buildWhoisLink(item.registry.domain)}
+                    href={buildWhoisLink(item?.registry?.domain)}
                   />
                 </Flex>
               </Table.Cell>

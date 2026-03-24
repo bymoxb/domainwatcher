@@ -5,7 +5,7 @@ import { Flex } from "@radix-ui/themes";
 import { Alert } from "./detail";
 import { DomainTable } from "./domain.card";
 import { DomainFilters } from "./filters";
-import { useTransition } from "react";
+import { Suspense, useTransition } from "react";
 
 export default function DomainPage({
   data,
@@ -17,10 +17,12 @@ export default function DomainPage({
   const [loading, startTransition] = useTransition();
   return (
     <Flex gap="3" direction="column">
-      <DomainFilters
-        startTransition={startTransition}
-        initialFilters={initialFilters}
-      />
+      <Suspense>
+        <DomainFilters
+          startTransition={startTransition}
+          initialFilters={initialFilters}
+        />
+      </Suspense>
 
       {data?.ok == false && (
         <Alert title="Error" type="alert">

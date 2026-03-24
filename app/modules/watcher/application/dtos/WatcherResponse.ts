@@ -5,7 +5,7 @@ export interface WatcherResponse {
   registryId: string;
   email: string;
   notificationEnabled: boolean;
-  registry: RegistryResponse;
+  registry: RegistryResponse | null | undefined;
   //
   type: "watcher";
 }
