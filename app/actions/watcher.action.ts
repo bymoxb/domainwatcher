@@ -29,8 +29,6 @@ export async function watchDomain(
   _prevState: any,
   formData: FormData
 ): Promise<Response<null>> {
-  console.log(formData.values());
-
   const useCase = new CreateWatcherUseCase(
     new WatcherRepository(),
     new RegistryRepository()

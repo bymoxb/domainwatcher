@@ -9,7 +9,6 @@ export class WatcherRepository implements IWatcherRepository {
     const result = await prisma.dw_watcher.findFirst({
       where: { registry_id: id, mail_address: email },
     });
-    console.log({ result });
     return result ? WatcherRepository.toDomain(result) : null;
   }
 
