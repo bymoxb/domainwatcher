@@ -6,6 +6,7 @@ interface IWatcherConstructor {
   email: string;
   notificationEnabled?: boolean;
   registry?: Registry | null;
+  deletedAt?: Date | null;
 }
 
 export class Watcher {
@@ -14,6 +15,7 @@ export class Watcher {
   private email: string;
   private notificationEnabled: boolean;
   private registry?: Registry | null;
+  private deletedAt?: Date | null;
 
   constructor(args: IWatcherConstructor) {
     this.id = args.id ? args.id : crypto.randomUUID();
@@ -21,6 +23,7 @@ export class Watcher {
     this.email = args?.email;
     this.notificationEnabled = args?.notificationEnabled ?? true;
     this.registry = args?.registry;
+    this.deletedAt = args?.deletedAt;
   }
 
   public get getId() {
@@ -41,5 +44,9 @@ export class Watcher {
 
   public get getRegistry() {
     return this.registry;
+  }
+
+  public get getDeletedAt() {
+    return this.deletedAt;
   }
 }

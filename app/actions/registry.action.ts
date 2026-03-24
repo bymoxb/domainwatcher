@@ -27,10 +27,9 @@ if (process.env.WHOISJSON_API_KEY) {
 console.log("Adapters count: " + adapters.length);
 
 export async function searchDomain(
-  _prevState: any,
-  formData: FormData
+  request: string
 ): Promise<Response<RegistryResponse>> {
-  const domainValue = String(formData.get("domain") ?? "");
+  const domainValue = String(request ?? "");
   let domain: Domain | null = null;
 
   try {
@@ -39,16 +38,20 @@ export async function searchDomain(
     return { ok: false, message: error?.message ?? "Invalid format" };
   }
 
-  const useCase = new GetRegistryByDomainUseCase(
-    new RegistryRepository(),
-    adapters
-  );
+  try {
+    const useCase = new GetRegistryByDomainUseCase(
+      new RegistryRepository(),
+      adapters
+    );
 
-  const data = await useCase.execute(domain);
+    const data = await useCase.execute(domain);
 
-  if (!data) {
+    if (!data) {
+      return { ok: false, message: "No results found" };
+    }
+
+    return { ok: true, data: RegistryMapper.toDTO(data) };
+  } catch (error) {
     return { ok: false, message: "No results found" };
   }
-
-  return { ok: true, data: RegistryMapper.toDTO(data) };
 }

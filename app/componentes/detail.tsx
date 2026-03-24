@@ -1,33 +1,24 @@
-import classNames from "classnames";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Callout } from "@radix-ui/themes";
 
 type DetailProps = {
-  type?: "info" | "danger" | "success" | "warning";
+  type?: "alert";
   title?: string;
   className?: string;
 } & React.PropsWithChildren;
 
-const Detail: React.FunctionComponent<DetailProps> = ({
-  type = "info",
+export const Alert: React.FunctionComponent<DetailProps> = ({
+  type = "alert",
   children,
   className,
   title,
 }) => {
-  const alertClasses = classNames(
-    "p-4 text-sm rounded-md",
-    {
-      "bg-blue-100 text-blue-800": type === "info",
-      "bg-red-100 text-red-800": type === "danger",
-      "bg-green-100 text-green-800": type === "success",
-      "bg-yellow-100 text-yellow-800": type === "warning",
-    },
-    className
-  );
-
   return (
-    <div role="alert" className={alertClasses}>
-      {title && <span className="font-bold">{title}:</span>} {children}
-    </div>
+    <Callout.Root color="red" className={className}>
+      <Callout.Icon>
+        <ExclamationTriangleIcon></ExclamationTriangleIcon>
+      </Callout.Icon>
+      <Callout.Text>{children}</Callout.Text>
+    </Callout.Root>
   );
 };
-
-export default Detail;

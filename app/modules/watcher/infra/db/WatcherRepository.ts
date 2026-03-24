@@ -1,15 +1,15 @@
+import { Domain } from "@/modules/registry/domain/Domain";
+import { Registry } from "@/modules/registry/domain/Registry";
 import prisma from "@/modules/shared/infra/prisma";
 import { IWatcherRepository } from "../../domain/IWatcherRepository";
 import { Watcher } from "../../domain/Watcher";
-import { Registry } from "@/modules/registry/domain/Registry";
-import { Domain } from "@/modules/registry/domain/Domain";
 
 export class WatcherRepository implements IWatcherRepository {
   async getByIdAndEmail(id: string, email: string): Promise<Watcher | null> {
     const result = await prisma.dw_watcher.findFirst({
       where: { registry_id: id, mail_address: email },
     });
-
+    console.log({ result });
     return result ? WatcherRepository.toDomain(result) : null;
   }
 
@@ -18,11 +18,15 @@ export class WatcherRepository implements IWatcherRepository {
     return result ? WatcherRepository.toDomain(result) : null;
   }
 
-  async getByEmail(email: string): Promise<Array<Watcher>> {
+  async getByEmail(
+    email: string,
+    order?: string,
+    direction?: string
+  ): Promise<Array<Watcher>> {
     const result = await prisma.dw_watcher.findMany({
-      where: { mail_address: email },
+      where: { mail_address: email, deleted_at: null },
       include: { dw_registry: true },
-      orderBy: [{ notification_enabled: "desc" }, { created_at: "desc" }],
+      orderBy: WatcherRepository.buildOrderByClause(order, direction),
     });
 
     return result.map((entity) => WatcherRepository.toDomain(entity));
@@ -31,7 +35,9 @@ export class WatcherRepository implements IWatcherRepository {
   async activateNotification(watcherId: string): Promise<Watcher | null> {
     const entity = await prisma.dw_watcher.update({
       where: { id: watcherId },
-      data: { notification_enabled: true },
+      data: {
+        notification_enabled: true,
+      },
     });
 
     return entity ? WatcherRepository.toDomain(entity) : null;
@@ -56,6 +62,56 @@ export class WatcherRepository implements IWatcherRepository {
     });
   }
 
+  async activateById(watcherId: string): Promise<Watcher> {
+    const entity = await prisma.dw_watcher.update({
+      where: { id: watcherId },
+      data: {
+        notification_enabled: true,
+        deleted_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+    });
+
+    return WatcherRepository.toDomain(entity);
+  }
+
+  async deleteById(watcherId: string) {
+    await prisma.dw_watcher.update({
+      where: { id: watcherId },
+      data: {
+        notification_enabled: false,
+        deleted_at: new Date(),
+      },
+    });
+  }
+
+  private static buildOrderByClause(
+    order?: string,
+    direction?: string
+  ): Array<any> {
+    if (direction == "desc") {
+      direction = "desc";
+    } else {
+      direction = "asc";
+    }
+
+    switch (order) {
+      case "domain":
+        return [{ dw_registry: { domain: direction } }];
+      case "expires":
+        return [{ dw_registry: { registry_expires_at: direction } }];
+      case "added":
+        return [{ created_at: direction }];
+      case "created":
+        return [{ dw_registry: { registry_created_at: direction } }];
+      case "notifi":
+        return [{ notification_enabled: direction }];
+      default:
+        return [{ notification_enabled: "desc" }, { created_at: "desc" }];
+    }
+  }
+
   private static toDomain(entity: any): Watcher {
     let registry: Registry | null = null;
 
@@ -78,6 +134,7 @@ export class WatcherRepository implements IWatcherRepository {
       registryId: entity.registry_id,
       email: entity.mail_address,
       notificationEnabled: entity.notification_enabled,
+      deletedAt: entity.deleted_at,
       //
       registry: registry,
     });

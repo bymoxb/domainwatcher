@@ -5,23 +5,32 @@ import { Watcher } from "../../domain/Watcher";
 export class CreateWatcherUseCase {
   constructor(
     private readonly watcherRepository: IWatcherRepository,
-    private readonly registryRepository: IRegistryRepository,
-  ) { }
+    private readonly registryRepository: IRegistryRepository
+  ) {}
 
   public async execute(request: { registryId: string; email: string }) {
     const registry = await this.registryRepository.getById(request.registryId);
 
     if (!registry) {
-      throw new Error('No encontrado');
+      throw new Error("No encontrado");
     }
 
-    const alreadyWatching = await this.watcherRepository.getByIdAndEmail(
+    let alreadyWatching = await this.watcherRepository.getByIdAndEmail(
       request.registryId,
-      request.email,
+      request.email
     );
 
     if (alreadyWatching) {
-      return;
+      if (alreadyWatching.getDeletedAt) {
+        alreadyWatching = await this.watcherRepository.activateById(
+          alreadyWatching.getId
+        );
+      } else if (!alreadyWatching.getNotificationEnabled) {
+        alreadyWatching = await this.watcherRepository.activateNotification(
+          alreadyWatching.getId
+        );
+      }
+      return alreadyWatching;
     }
 
     const watcher = new Watcher({

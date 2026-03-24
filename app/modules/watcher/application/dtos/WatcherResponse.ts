@@ -5,7 +5,15 @@ export interface WatcherResponse {
   registryId: string;
   email: string;
   notificationEnabled: boolean;
-  registry: RegistryResponse | null;
+  registry: RegistryResponse;
   //
-  type: "watcher",
+  type: "watcher";
 }
+
+export type SearchDomainsForm = {
+  email?: string;
+  order?: string;
+  direction?: string;
+  domain?: string;
+};
+

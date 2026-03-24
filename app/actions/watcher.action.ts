@@ -1,16 +1,26 @@
-"use server"
+"use server";
 
+import {
+  isTrustedEmail,
+  isValidEmail,
+  TRUSTED_EMAIL_DOMAINS,
+} from "@/libs/email.validation";
 import { RegistryRepository } from "@/modules/registry/infra/db/RegistryRepository";
+import {
+  SearchDomainsForm,
+  WatcherResponse,
+} from "@/modules/watcher/application/dtos/WatcherResponse";
+import { WatcherMapper } from "@/modules/watcher/application/mappers/WatcherMapper";
+import { ActivateNotificationUseCase } from "@/modules/watcher/application/usecases/ActivateNotificationUseCase";
 import { CreateWatcherUseCase } from "@/modules/watcher/application/usecases/CreateWatcherUseCase";
+import { DeactivateNotificationUseCase } from "@/modules/watcher/application/usecases/DeactivateNotificationUseCase";
 import { GetWatcherByEmailUseCase } from "@/modules/watcher/application/usecases/GetWatcherByEmailUseCase";
+import { GetWatcherByIdUseCase } from "@/modules/watcher/application/usecases/GetWatcherByIdUseCase";
 import { WatcherRepository } from "@/modules/watcher/infra/db/WatcherRepository";
 import { Response } from "./registry.action";
-import { WatcherMapper } from "@/modules/watcher/application/mappers/WatcherMapper";
-import { WatcherResponse } from "@/modules/watcher/application/dtos/WatcherResponse";
-import { isTrustedEmail, isValidEmail, TRUSTED_EMAIL_DOMAINS } from "@/libs/email.validation";
-import { GetWatcherByIdUseCase } from "@/modules/watcher/application/usecases/GetWatcherByIdUseCase";
-import { ActivateNotificationUseCase } from "@/modules/watcher/application/usecases/ActivateNotificationUseCase";
-import { DeactivateNotificationUseCase } from "@/modules/watcher/application/usecases/DeactivateNotificationUseCase";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { DeleteWatcherUseCase } from "@/modules/watcher/application/usecases/DeleteWatcherUseCase";
 
 /**
  * Watches a domain by email.
@@ -18,7 +28,9 @@ import { DeactivateNotificationUseCase } from "@/modules/watcher/application/use
 export async function watchDomain(
   _prevState: any,
   formData: FormData
-): Promise<Response<any>> {
+): Promise<Response<null>> {
+  console.log(formData.values());
+
   const useCase = new CreateWatcherUseCase(
     new WatcherRepository(),
     new RegistryRepository()
@@ -60,29 +72,28 @@ export async function watchDomain(
     };
   }
 
-  return { ok: false, message: "Feature not implemented yet" };
+  return { ok: true, data: null };
 }
 
 /**
  * Returns all domains associated with a given email.
  */
 export async function myDomains(
-  _prevState: any,
-  formData: FormData
-): Promise<Response<{ email: string; items: WatcherResponse[] }>> {
-  const useCase = new GetWatcherByEmailUseCase(new WatcherRepository());
+  request: SearchDomainsForm
+): Promise<Response<WatcherResponse[]>> {
+  const { email } = request;
 
-  const email = formData.get("email");
+  const useCase = new GetWatcherByEmailUseCase(new WatcherRepository());
 
   if (!email) {
     return { ok: false, message: "Email is required" };
   }
 
-  if (!isValidEmail(email.toString())) {
+  if (!isValidEmail(email)) {
     return { ok: false, message: "Email is invalid" };
   }
 
-  if (!isTrustedEmail(email.toString())) {
+  if (!isTrustedEmail(email)) {
     return {
       ok: false,
       message: `Email domain not trusted. Use one of the following: ${TRUSTED_EMAIL_DOMAINS.join(
@@ -91,11 +102,19 @@ export async function myDomains(
     };
   }
 
-  const data = await useCase.execute(email.toString());
-  return {
-    ok: true,
-    data: { email: email.toString(), items: data.map(WatcherMapper.toDTO) },
-  };
+  try {
+    const data = await useCase.execute(email, request.order, request.direction);
+    // revalidatePath("/my-domains", "page");
+    return {
+      ok: true,
+      data: data.map(WatcherMapper.toDTO),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message: "No results found",
+    };
+  }
 }
 
 /**
@@ -130,5 +149,34 @@ export async function changeSubscription(
     return { ok: false, message: "The domain does not exist" };
   }
 
+  revalidatePath("/my-domains");
   return { ok: true, data: WatcherMapper.toDTO(watcher) };
+}
+
+export async function removeDomain(
+  _prevState: any,
+  formData: FormData
+): Promise<Response<null>> {
+  try {
+    const watcherId = formData.get("watcherId")?.toString();
+
+    if (!watcherId) {
+      return {
+        ok: false,
+        message: "You must specify a subscription ID",
+      };
+    }
+    const useCase = new DeleteWatcherUseCase(new WatcherRepository());
+    await useCase.execute(watcherId);
+    revalidatePath("/my-domains");
+    return {
+      ok: true,
+      data: null,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message: "There was an issue removing your subscription",
+    };
+  }
 }
