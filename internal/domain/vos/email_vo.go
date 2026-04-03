@@ -35,7 +35,12 @@ func NewEmail(value *string) (*Email, error) {
 		return nil, errors.New(ErrInvalidEmail)
 	}
 
-	allowedDomains := strings.Split(os.Getenv("DW_ALLOWED_EMAIL_DOMAINS"), ",")
+	allowedDomainsEnv := os.Getenv("DW_ALLOWED_EMAIL_DOMAINS")
+	var allowedDomains []string
+
+	if allowedDomainsEnv != "" {
+		allowedDomains = strings.Split(allowedDomainsEnv, ",")
+	}
 
 	if len(allowedDomains) > 0 {
 		parts := strings.Split(*value, "@")
