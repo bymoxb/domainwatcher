@@ -10,6 +10,7 @@ import (
 	eventsinfra "domainwatcher/internal/infra/events"
 	"domainwatcher/internal/infra/helpers"
 	"domainwatcher/internal/infra/http/controllers"
+	"domainwatcher/internal/infra/http/static"
 	"domainwatcher/internal/infra/persistence/postgres"
 	"domainwatcher/internal/infra/persistence/sqlite"
 	"fmt"
@@ -86,6 +87,7 @@ func NewApp() (*App, error) {
 	group.PATCH("/watcher/:id", wc.ToogleNotificationWatcher)
 	group.DELETE("/watcher/:id", wc.DeleteWatcher)
 
+	static.SetupStaticRoutes(router)
 	//
 
 	return &App{
