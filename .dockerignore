@@ -1,0 +1,21 @@
+.vscode
+
+# Frontend
+frontend/node_modules
+frontend/dist
+frontend/.env*
+
+# Backend
+vendor/
+bin
+main
+*.db
+*.log
+.env
+
+# Docker/Git
+.git
+Dockerfile
+.dockerignore
+
+db
