@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Domain Status Notification</title>
+</head>
+
+<body style="margin: 0; padding: 0; background-color: #f4f4f7; font-family: Arial, Helvetica, sans-serif;">
+  <table role="presentation" cellspacing="0" cellpadding="0" width="100%"
+    style="background-color: #f4f4f7; padding: 20px;">
+    <tr>
+      <td align="center">
+        <!-- Main Container -->
+        <table role="presentation" cellspacing="0" cellpadding="0" width="100%"
+          style="max-width: 600px; background-color: #ffffff; border-radius: 8px; border: 1px solid #dddddd; overflow: hidden;">
+
+          <!-- Header -->
+          <tr>
+            <td
+              style="padding: 30px 20px; text-align: center; background-color: #ffffff; border-bottom: 3px solid {{if .is_expired}}#d32f2f{{else}}#2c3e50{{end}};">
+              <h1 style="color: #1a1a1a; margin: 0; font-size: 24px; font-weight: bold;">
+                {{if .is_expired}}Domain Expired{{else}}Expiration Alert{{end}}
+              </h1>
+              <p style="color: #666666; margin: 5px 0 0 0; font-size: 16px;">
+                Monitoring update for <strong>{{.domain_name}}</strong>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Body Content -->
+          <tr>
+            <td style="padding: 40px 30px; line-height: 1.6; color: #333333; font-size: 16px;">
+              <p style="margin-top: 0;">Hello,</p>
+
+              <p>You are receiving this notification because you are tracking the status of:</p>
+              <p
+                style="font-size: 18px; color: #1a1a1a; text-align: center; padding: 10px; background-color: #f8f9fa; border: 1px dashed #cccccc; border-radius: 4px;">
+                <strong>{{.domain_name}}</strong>
+              </p>
+
+              {{if .is_expired}}
+              <!-- Status: EXPIRED -->
+              <div
+                style="background-color: #fff5f5; border: 1px solid #feb2b2; border-radius: 6px; padding: 15px; margin: 20px 0;">
+                <p style="margin: 0; color: #c53030; font-weight: bold;">
+                  Status: Expired
+                </p>
+                <p style="margin: 5px 0 0 0; color: #4a5568; font-size: 14px;">
+                  The domain reached its expiration date on <strong>{{.expiration_date}}</strong>. It may soon become
+                  available for registration depending on the registrar's grace period.
+                </p>
+              </div>
+              {{else}}
+              <!-- Status: WARNING -->
+              <div
+                style="background-color: #fffaf0; border: 1px solid #fbd38d; border-radius: 6px; padding: 15px; margin: 20px 0;">
+                <p style="margin: 0; color: #9c4221; font-weight: bold;">
+                  Status: Active (Expiring Soon)
+                </p>
+                <p style="margin: 5px 0 0 0; color: #4a5568; font-size: 14px;">
+                  This domain is set to expire in <strong>{{.days_remaining}} days</strong> ({{.expiration_date}}).
+                </p>
+              </div>
+              {{end}}
+
+              <p style="font-size: 14px; color: #718096;">
+                Note: Domain deletion cycles vary. We recommend checking the availability frequently if you intend to
+                register this domain.
+              </p>
+
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 20px; background-color: #f7fafc; text-align: center; border-top: 1px solid #edf2f7;">
+              <p style="font-size: 12px; color: #a0aec0; margin: 0; line-height: 1.5;">
+                This is an automated alert from your Domain Watchlist.<br>
+                To stop tracking this domain, <a href="{{.app_domain}}/my-domains?domain={{.domain_name}}"
+                  style="color: #4299e1; text-decoration: underline;">click here to unsubscribe</a>.
+              </p>
+            </td>
+          </tr>
+        </table>
+
+
+
+      </td>
+    </tr>
+  </table>
+</body>
+
+</html>
