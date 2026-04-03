@@ -2,7 +2,8 @@ package static
 
 import (
 	"embed"
-	"log"
+	"fmt"
+	"log/slog"
 	"net/http"
 	"strings"
 
@@ -13,8 +14,11 @@ import (
 //go:embed all:dist
 var distEmbed embed.FS
 
-func SetupStaticRoutes(r *gin.Engine) {
-	distFS := getFileSystem("dist")
+func SetupStaticRoutes(r *gin.Engine) error {
+	distFS, err := getFileSystem("dist")
+	if err != nil {
+		return err
+	}
 	r.Use(ginstatic.Serve("/", distFS))
 
 	r.NoRoute(func(c *gin.Context) {
@@ -22,7 +26,8 @@ func SetupStaticRoutes(r *gin.Engine) {
 		if !strings.HasPrefix(c.Request.RequestURI, "/api") {
 			index, err := distFS.Open("index.html")
 			if err != nil {
-				log.Fatal(err)
+				slog.Error("failed to open index.html", "error", err)
+				return
 			}
 			defer index.Close()
 			stat, _ := index.Stat()
@@ -30,12 +35,14 @@ func SetupStaticRoutes(r *gin.Engine) {
 		}
 	})
 
+	return nil
 }
 
-func getFileSystem(path string) ginstatic.ServeFileSystem {
+func getFileSystem(path string) (ginstatic.ServeFileSystem, error) {
 	fs, err := ginstatic.EmbedFolder(distEmbed, path)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("failed to embed folder", "path", path, "error", err)
 	}
-	return fs
+
+	return fs, nil
 }

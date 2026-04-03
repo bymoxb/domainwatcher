@@ -87,7 +87,10 @@ func NewApp() (*App, error) {
 	group.PATCH("/watcher/:id", wc.ToogleNotificationWatcher)
 	group.DELETE("/watcher/:id", wc.DeleteWatcher)
 
-	static.SetupStaticRoutes(router)
+	// STATIC
+	if err = static.SetupStaticRoutes(router); err != nil {
+		return nil, err
+	}
 	//
 
 	return &App{

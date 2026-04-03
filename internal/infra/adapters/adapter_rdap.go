@@ -5,6 +5,7 @@ import (
 	"domainwatcher/internal/domain/vos"
 	"domainwatcher/internal/infra/helpers"
 	"fmt"
+	"log/slog"
 	"net/url"
 	"time"
 
@@ -12,6 +13,7 @@ import (
 )
 
 type RdapAdapter struct {
+	baseUrl    url.URL
 	HttpClient helpers.HttpClient
 }
 
@@ -31,21 +33,30 @@ type Entity struct {
 }
 
 func NewRdapAdapter(httpClient *helpers.HttpClient) *RdapAdapter {
+	urlParsed, _ := url.Parse("https://rdap.org/domain/")
+
 	return &RdapAdapter{
 		HttpClient: *httpClient,
+		baseUrl:    *urlParsed,
 	}
+}
+
+func (ctx RdapAdapter) GetName() string {
+	return ctx.baseUrl.Hostname()
 }
 
 func (ctx RdapAdapter) GetData(domain vos.Domain) *registry.Registry {
 
-	urlParsed, err := url.Parse(fmt.Sprintf("https://rdap.org/domain/%s", domain.Value()))
+	urlParsed := ctx.baseUrl
+	urlParsed.Path = fmt.Sprintf("%s%s", urlParsed.Path, domain.Value())
 
+	var err error
 	var response RDAPResponse
 
 	err = ctx.HttpClient.Get(urlParsed.String(), nil, &response)
 
 	if err != nil {
-		fmt.Printf("Error al procesar la respuesta: %s\n", err)
+		slog.Error("Could not process response", "adapter", ctx.GetName(), "error", err, "domain", domain.Value())
 		return nil
 	}
 
@@ -54,7 +65,6 @@ func (ctx RdapAdapter) GetData(domain vos.Domain) *registry.Registry {
 		eventDate, err := time.Parse(time.RFC3339, event.EventDate)
 
 		if err != nil {
-			fmt.Printf("Error al parsear la fecha: %s\n", err)
 			continue
 		}
 
@@ -69,7 +79,7 @@ func (ctx RdapAdapter) GetData(domain vos.Domain) *registry.Registry {
 	}
 
 	if registration == nil || expiration == nil {
-		fmt.Println("Fechas críticas no encontradas en la respuesta RDAP")
+		slog.Error("Critical dates not found in response", "adapter", ctx.GetName(), "domain", domain.Value())
 		return nil
 	}
 

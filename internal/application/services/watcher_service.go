@@ -4,7 +4,6 @@ import (
 	"domainwatcher/internal/domain/vos"
 	"domainwatcher/internal/domain/watcher"
 	"errors"
-	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -26,7 +25,6 @@ func (ws *WatcherService) CreateWatcher(email vos.Email, registryId uuid.UUID) (
 	modelExists, err := ws.Repository.GetByRegistryIdAndEmail(email, registryId)
 
 	if err == nil {
-		fmt.Println("b")
 		if modelExists.DeletedAt != nil {
 			ws.Repository.UnDeleteWatcher(modelExists.ID)
 		}

@@ -5,6 +5,7 @@ import (
 	"domainwatcher/internal/infra/config"
 	"domainwatcher/internal/infra/helpers"
 	"fmt"
+	"log/slog"
 	"strings"
 )
 
@@ -27,8 +28,6 @@ func (ctx *SubTelegram) Subscribe(channel chan events.Event) {
 			continue
 		}
 
-		// fmt.Printf("Enviando notificaion por telegram para: %s\n", event.Registry.Domain.Value())
-
 		var result interface{}
 
 		meta := helpers.ExtractRegistryNotificaionData(event.Registry)
@@ -50,7 +49,7 @@ func (ctx *SubTelegram) Subscribe(channel chan events.Event) {
 			result)
 
 		if err != nil {
-			fmt.Printf("Error: %s\n", err.Error())
+			slog.Error("Could not send Telegram notification", "error", err, "domain", event.Registry.Domain.Value())
 		}
 
 	}

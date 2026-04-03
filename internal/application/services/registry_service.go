@@ -5,7 +5,7 @@ import (
 	"domainwatcher/internal/domain/registry"
 	"domainwatcher/internal/domain/vos"
 	"domainwatcher/internal/domain/watcher"
-	"fmt"
+	"log/slog"
 	"time"
 )
 
@@ -31,22 +31,20 @@ func (rs *RegistryService) CheckRegistryStatus() {
 
 		watchers := rs.wr.GetWatchersToNotify(r.ID)
 
-		fmt.Printf("domain=%s\twatchers=%d\n", r.Domain.Value(), len(watchers))
-
 		rs.dispatcher.Publish(events.Event{Registry: r, Watchers: watchers})
 	}
 }
 
 func (rs *RegistryService) SearchInAdapters(domain vos.Domain) *registry.Registry {
-	fmt.Printf("Search in adapter: %s\n", domain.Value())
 	for _, adapter := range rs.adapters {
+		slog.Info("Search in adapter", "adapter", adapter.GetName(), "domain", domain.Value())
 		registry := adapter.GetData(domain)
 		if registry != nil {
 			return registry
 		}
 	}
 
-	fmt.Printf("NOT FOUND Search in adapter: %s\n", domain.Value())
+	slog.Warn("Domain not found in any adapter", "domain", domain.Value())
 	return nil
 }
 

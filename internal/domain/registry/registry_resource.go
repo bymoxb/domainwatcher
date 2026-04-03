@@ -5,5 +5,6 @@ import (
 )
 
 type RegistryResource interface {
+	GetName() string
 	GetData(domain vos.Domain) *Registry
 }

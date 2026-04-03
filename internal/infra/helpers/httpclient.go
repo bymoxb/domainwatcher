@@ -74,8 +74,6 @@ func (h *HttpClient) Post(url string, data interface{}, headers map[string]strin
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		bodyBytes, _ := io.ReadAll(resp.Body)
-		fmt.Printf("Error: %s\n", string(bodyBytes))
 		return fmt.Errorf("la respuesta no fue exitosa: %s", resp.Status)
 	}
 

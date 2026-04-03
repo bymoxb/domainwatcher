@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"strconv"
 	"strings"
@@ -41,7 +41,7 @@ func LoadConfig() (*Config, error) {
 
 	if os.Getenv("ENV") != "production" {
 		if err := godotenv.Load(); err != nil {
-			log.Println("Error loading .env file")
+			return nil, fmt.Errorf("Error loading .env file: %v", err)
 		}
 	}
 
@@ -65,7 +65,12 @@ func LoadConfig() (*Config, error) {
 	}
 
 	if _timeout, err := strconv.Atoi(timeoutEnv); err != nil {
-		log.Printf("Warning: Could not convert DW_HTTP_TIMEOUT=%s. Using default value=%d. Error: %v", timeoutEnv, timeout, err)
+		slog.Warn("Could not convert timeout environment variable",
+			"variable", "DW_HTTP_TIMEOUT",
+			"invalid_value", timeoutEnv,
+			"using_default", timeout,
+			"error", err,
+		)
 	} else {
 		timeout = _timeout
 	}
@@ -79,7 +84,12 @@ func LoadConfig() (*Config, error) {
 	}
 
 	if _daysLeftToExpire, err := strconv.Atoi(daysLeftToExpireEnv); err != nil {
-		log.Printf("Warning: Could not convert DW_EXPIRATION_THRESHOLD=%s. Using default value=%d. Error: %v", daysLeftToExpireEnv, daysLeftToExpire, err)
+		slog.Warn("Could not convert expiration threshold environment variable",
+			"variable", "DW_EXPIRATION_THRESHOLD",
+			"invalid_value", daysLeftToExpireEnv,
+			"using_default", daysLeftToExpire,
+			"error", err,
+		)
 	} else {
 		daysLeftToExpire = _daysLeftToExpire
 	}
@@ -100,7 +110,12 @@ func LoadConfig() (*Config, error) {
 	}
 
 	if _daysLeftToExpire, err := strconv.Atoi(mailPortEnv); err != nil {
-		log.Printf("Warning: Could not convert MAIL_PORT=%s. Using default value=%d. Error: %v", mailPortEnv, mailPort, err)
+		slog.Warn("Could not convert mail port environment variable",
+			"variable", "MAIL_PORT",
+			"invalid_value", mailPortEnv,
+			"using_default", mailPort,
+			"error", err,
+		)
 	} else {
 		mailPort = _daysLeftToExpire
 	}

@@ -3,7 +3,6 @@ package postgres
 import (
 	"domainwatcher/internal/domain/registry"
 	"domainwatcher/internal/domain/vos"
-	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -31,8 +30,6 @@ func (rr *RegistryRepositoryImpl) CreateRegistry(model registry.Registry) *regis
 		CreatedAt:         time.Now(),
 	}
 
-	fmt.Printf("%+v\n", entity)
-
 	rr.DB.Create(entity)
 
 	return MapRegistryToDomain(entity)
@@ -52,7 +49,6 @@ func (rr *RegistryRepositoryImpl) SearchRegistry(domain vos.Domain) *registry.Re
 }
 
 func (rr *RegistryRepositoryImpl) GetById(id uuid.UUID) *registry.Registry {
-	fmt.Printf("GetById-Searching=%s\n", id.String())
 
 	var registry *RegistryModel
 
@@ -95,7 +91,6 @@ func (rr *RegistryRepositoryImpl) GetAboutExpiredRegistries(days int) []registry
 		Find(&origins)
 
 	if result.Error != nil {
-		fmt.Printf("Ocurrio un error al buscar los dominios que esta apunto de expirar: %v\n ", result.Error.Error())
 		return []registry.Registry{}
 	}
 

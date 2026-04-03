@@ -6,6 +6,7 @@ import (
 	"domainwatcher/internal/infra/config"
 	"domainwatcher/internal/infra/helpers"
 	"log"
+	"log/slog"
 	"text/template"
 	"time"
 
@@ -32,8 +33,6 @@ func (ctx *SubSMTP) Subscribe(channel chan events.Event) {
 		if len(event.Watchers) == 0 {
 			continue
 		}
-
-		// fmt.Printf("Received an event and send via smtp=%s\n", event.Registry.Domain.Value())
 
 		var emails []string
 		for _, w := range event.Watchers {
@@ -63,7 +62,7 @@ func (ctx *SubSMTP) Subscribe(channel chan events.Event) {
 		msg.SetBody("text/html", body)
 
 		if err := ctx.Dialer.DialAndSend(msg); err != nil {
-			log.Println("send error:", err)
+			slog.Error("Could not send email notification", "error", err, "domain", event.Registry.Domain.Value())
 			continue
 		}
 
