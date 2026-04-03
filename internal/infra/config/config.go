@@ -39,8 +39,10 @@ const (
 
 func LoadConfig() (*Config, error) {
 
-	if err := godotenv.Load(); err != nil {
-		return nil, err
+	if os.Getenv("ENV") != "production" {
+		if err := godotenv.Load(); err != nil {
+			log.Println("Error loading .env file")
+		}
 	}
 
 	DBDriver := os.Getenv("DB_DRIVER")
