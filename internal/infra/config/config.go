@@ -19,6 +19,7 @@ type Config struct {
 	Timeout             int
 	DaysLeftToExpire    int
 	TrustedProxies      []string
+	TrustedPlatform     string
 	NotificationChannel string
 	MailPort            int
 	MailHost            string
@@ -97,7 +98,9 @@ func LoadConfig() (*Config, error) {
 	//
 	var trustedProxies []string
 	trustedProxiesEnv := os.Getenv("DW_TRUSTED_PROXIES")
-	if len(strings.Split(trustedProxiesEnv, ",")) <= 0 {
+	if trustedProxiesEnv != "" {
+		trustedProxies = strings.Split(trustedProxiesEnv, ",")
+	} else {
 		trustedProxies = append(trustedProxies, "127.0.0.1")
 	}
 
@@ -137,6 +140,7 @@ func LoadConfig() (*Config, error) {
 		Timeout:             timeout,
 		DaysLeftToExpire:    daysLeftToExpire,
 		TrustedProxies:      trustedProxies,
+		TrustedPlatform:     os.Getenv("DW_TRUSTED_PLATFORM"),
 		NotificationChannel: notificationChannel,
 		MailPort:            mailPort,
 		MailHost:            os.Getenv("MAIL_HOST"),

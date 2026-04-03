@@ -53,8 +53,8 @@ func NewApp() (*App, error) {
 	var dispatcher eventsdomain.Broker = eventsinfra.NewEventDispatcher()
 
 	//
-	if err = router.SetTrustedProxies(cfg.TrustedProxies); err != nil {
-		return nil, fmt.Errorf("Error loading trusted proxies: %w", err)
+	if err = SetupOrigins(cfg, router); err != nil {
+		return nil, err
 	}
 
 	//
@@ -102,6 +102,22 @@ func NewApp() (*App, error) {
 func (ctx *App) Run() {
 	ctx.cron.Start()
 	ctx.router.Run(":9876")
+}
+
+func SetupOrigins(cfg *config.Config, router *gin.Engine) error {
+
+	switch cfg.TrustedPlatform {
+	case "cloudflare":
+		router.TrustedPlatform = gin.PlatformCloudflare
+	default:
+		return fmt.Errorf("Unsupported trusted platform: %s", cfg.TrustedPlatform)
+	}
+
+	if err := router.SetTrustedProxies(cfg.TrustedProxies); err != nil {
+		return fmt.Errorf("Error setting trusted proxies: %w", err)
+	}
+
+	return nil
 }
 
 func RegisterListener(cfg *config.Config, dispatcher eventsdomain.Broker, rs *services.RegistryService, httpClient *helpers.HttpClient) error {
