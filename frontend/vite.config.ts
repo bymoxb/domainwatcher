@@ -9,6 +9,10 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    outDir: "dist",
+    emptyOutDir: true,
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'), // Aquí es donde se mapea el alias
@@ -16,11 +20,9 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // Proxy requests starting with '/api'
       '/api': {
-        target: 'http://localhost:9876', // The address of your backend server
-        // changeOrigin: true, // Needed for virtual hosted sites
-        // rewrite: (path) => path.replace(/^\/api/, ''), // Remove the '/api' prefix when forwarding
+        target: 'http://localhost:9876',
+        changeOrigin: true,
       },
     },
   },
