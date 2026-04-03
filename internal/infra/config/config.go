@@ -122,7 +122,7 @@ func LoadConfig() (*Config, error) {
 
 	//
 	notificationChannel := NC_SMTP
-	notificationChannelEnv := os.Getenv("DW_NOTIFICATION_CHANEL")
+	notificationChannelEnv := os.Getenv("DW_NOTIFICATION_CHANNEL")
 
 	if notificationChannelEnv != "" {
 		notificationChannel = notificationChannelEnv
