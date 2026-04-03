@@ -22,7 +22,12 @@ func NewSubTelegram(cfg *config.Config, httpClient helpers.HttpClient) *SubTeleg
 
 func (ctx *SubTelegram) Subscribe(channel chan events.Event) {
 	for event := range channel {
-		fmt.Printf("Enviando notificaion por telegram para: %s\n", event.Registry.Domain.Value())
+
+		if len(event.Watchers) == 0 {
+			continue
+		}
+
+		// fmt.Printf("Enviando notificaion por telegram para: %s\n", event.Registry.Domain.Value())
 
 		var result interface{}
 

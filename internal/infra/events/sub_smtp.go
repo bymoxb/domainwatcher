@@ -28,15 +28,16 @@ func (ctx *SubSMTP) Subscribe(channel chan events.Event) {
 	appDomain := ctx.cfg.AppDomain
 
 	for event := range channel {
+
+		if len(event.Watchers) == 0 {
+			continue
+		}
+
 		// fmt.Printf("Received an event and send via smtp=%s\n", event.Registry.Domain.Value())
 
 		var emails []string
 		for _, w := range event.Watchers {
 			emails = append(emails, w.MailAddress.Value())
-		}
-
-		if len(emails) == 0 {
-			continue
 		}
 
 		meta := helpers.ExtractRegistryNotificaionData(event.Registry)
