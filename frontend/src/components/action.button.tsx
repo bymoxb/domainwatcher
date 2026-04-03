@@ -18,22 +18,25 @@ import {
   Inset,
   Strong,
 } from "@radix-ui/themes";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState } from "react";
+
+type EmptyAction = null
 
 export const ActionButtons = ({ watcher }: { watcher: WatcherResponse }) => {
-  const [stateRemove, actionRemove, pendingRemove] = useActionState(
-    async (p, f: FormData) => {
+  const [, actionRemove, pendingRemove] = useActionState<EmptyAction, FormData>(
+    async (_p: EmptyAction, f: FormData) => {
       const watcherId = f.get("watcherId")?.toString() ?? ""
       await fetch("/api/watcher/:id".replace(":id", watcherId), { method: "DELETE" })
+      return null
     },
     null
   );
 
-  const [stateSChanged, actionSChanged, pendingSChanged] = useActionState(
-    async (p, f: FormData) => {
+  const [, actionSChanged, pendingSChanged] = useActionState<EmptyAction, FormData>(
+    async (_p: EmptyAction, f: FormData) => {
       const watcherId = f.get("watcherId")?.toString() ?? ""
       await fetch("/api/watcher/:id".replace(":id", watcherId), { method: "PATCH" })
-
+      return null
     },
     null
   );
@@ -121,11 +124,13 @@ export const ActionButtons = ({ watcher }: { watcher: WatcherResponse }) => {
   );
 };
 
+type NotifyAction = {
+  message: string,
+  ok?: boolean
+}
+
 export const NotifyButton = ({ registry }: { registry: RegistryResponse }) => {
-  const [state, action, pending] = useActionState<{
-    message: string,
-    ok?: boolean
-  }>(async (prev: any, form: FormData) => {
+  const [state, action, pending] = useActionState<NotifyAction, FormData>(async (_p: NotifyAction, form: FormData) => {
     try {
       const response = await fetch("/api/watcher", {
         method: "POST",

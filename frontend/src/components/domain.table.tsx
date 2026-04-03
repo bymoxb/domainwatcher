@@ -5,9 +5,9 @@ import { buildRdapLink, buildWhoisLink } from "@/libs/links";
 import type { RegistryResponse } from "@/types/registry.type";
 import type { WatcherResponse } from "@/types/watcher.type";
 import { Flex, Skeleton, Table } from "@radix-ui/themes";
-import { ActionButtons, NotifyButton } from "../components/action.button";
-import DaysBadge from "../components/days.badge";
-import LinkButton from "../components/link.button";
+import { ActionButtons, NotifyButton } from "./action.button";
+import DaysBadge from "./days.badge";
+import LinkButton from "./link.button";
 
 
 type DomainTableItems = {

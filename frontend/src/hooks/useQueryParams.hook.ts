@@ -10,13 +10,13 @@ export function useQueryParams() {
   }
 
   const setQueryParam = (key: string, value: string) => {
-    const url = new URL(window.location);
+    const url = new URL(window.location.href);
     url.searchParams.set(key, value);
     window.history.pushState({}, '', url);
   }
 
   const setQueryParamFromForm = (form: FormData) => {
-    const url = new URL(window.location);
+    const url = new URL(window.location.href);
     for (const k of form.keys()) {
       url.searchParams.set(k, form.get(k)?.toString() ?? "");
     }
@@ -25,7 +25,7 @@ export function useQueryParams() {
 
   const getFormDataFromQueryParams = (): FormData => {
     const formData = new FormData();
-    const url = new URL(window.location);
+    const url = new URL(window.location.href);
 
     // Recorremos los parámetros de la URL y los agregamos al FormData
     url.searchParams.forEach((value, key) => {

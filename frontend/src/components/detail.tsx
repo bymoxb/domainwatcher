@@ -8,10 +8,8 @@ type DetailProps = {
 } & React.PropsWithChildren;
 
 export const Alert: React.FunctionComponent<DetailProps> = ({
-  type = "alert",
   children,
   className,
-  title,
 }) => {
   return (
     <Callout.Root color="red" className={className}>

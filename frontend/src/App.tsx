@@ -2,12 +2,11 @@ import { Box, Select, Tabs } from '@radix-ui/themes'
 import { Heading } from '@radix-ui/themes/dist/cjs/components/index.js'
 import { useState } from 'react'
 import { Alert } from './components/detail'
-import { DomainFilters } from './components/filters'
 import Input from './components/input'
 import { useQueryParams } from './hooks/useQueryParams.hook'
 import { useSearchRegistry } from './hooks/useRegistry.hook'
 import { useWatcher } from './hooks/useWatcher.hook'
-import { DomainTable } from './temp/domain.table'
+import { DomainTable } from './components/domain.table'
 
 
 
@@ -65,11 +64,21 @@ const SearchDomain = () => {
 
   return (
     <>
-      <DomainFilters
-        onSubmit={onSubmit}
-      // startTransition={startTransition}
-      // initialFilters={initialFilters}
-      />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          onSubmit(new FormData(e.currentTarget))
+        }}
+      >
+        <Input
+          autoFocus
+          type="text"
+          id="domain"
+          name="domain"
+          placeholder="Enter a domain name"
+          required
+        />
+      </form>
 
       {!loading && error && (
         <Alert title="Error" type="alert">
