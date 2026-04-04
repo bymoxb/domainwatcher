@@ -18,7 +18,7 @@ const MyDomains = () => {
   } = useWatcher(getFormDataFromQueryParams())
 
   return (
-    <>
+    <main className="flex flex-col gap-2">
       <form
         onSubmit={(e) => {
           e.preventDefault()
@@ -26,7 +26,7 @@ const MyDomains = () => {
           onSubmit(form)
           setQueryParamFromForm(form)
         }}
-        className="gap-3 grid sm:grid-cols-3 md:grid-cols-5"
+        className="gap-2 grid sm:grid-cols-3 md:grid-cols-5"
       >
         <Input
           autoFocus
@@ -92,7 +92,7 @@ const MyDomains = () => {
         loading={loading}
         data={{ watcher: data }}
       />
-    </>
+    </main>
   )
 }
 

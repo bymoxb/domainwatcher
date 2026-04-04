@@ -10,7 +10,7 @@ const RootLayout: React.FunctionComponent<React.PropsWithChildren> = ({
       appearance="dark"
       accentColor="blue"
     >
-      <Container size="4">
+      <Container size="4" p="4">
         {children}
         <Footer />
       </Container>

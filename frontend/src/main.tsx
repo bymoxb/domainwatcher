@@ -4,7 +4,6 @@ import RootLayout from './components/root.layout.tsx'
 
 import './index.css'
 
-// import App from './App.tsx'
 const App = React.lazy(() => import('@/App.tsx'))
 
 

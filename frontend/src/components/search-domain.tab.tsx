@@ -13,7 +13,7 @@ const SearchDomain = () => {
   } = useSearchRegistry()
 
   return (
-    <>
+    <main className="flex flex-col gap-2">
       <form
         onSubmit={(e) => {
           e.preventDefault()
@@ -42,7 +42,7 @@ const SearchDomain = () => {
       // data={data?.ok ? { registry: data.data, watcher: [] } : { watcher: [] }}
       />
 
-    </>
+    </main>
   )
 }
 

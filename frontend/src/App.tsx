@@ -4,8 +4,6 @@ import React, { useState } from 'react'
 import { useQueryParams } from './hooks/useQueryParams.hook'
 
 const SearchDomain = React.lazy(() => import('@/components/search-domain.tab'))
-// import SearchDomain from './components/search-domain.tab'
-// import MyDomains from './components/my-domain.tab'
 const MyDomains = React.lazy(() => import('@/components/my-domain.tab'))
 
 function App() {
@@ -15,7 +13,7 @@ function App() {
   const [value, setValue] = useState<string>(getQueryParam("t"))
 
   return (
-    <>
+    <main className='flex flex-col gap-2'>
       <Heading size="6" weight="bold">
         DomainWatcher
       </Heading>
@@ -45,7 +43,7 @@ function App() {
 
       </Tabs.Root>
 
-    </>
+    </main>
   )
 }
 
