@@ -24,7 +24,7 @@ function App() {
       }}>
         <Tabs.List>
           <Tabs.Trigger value="" >
-            Seatch Domains
+            Search Domains
           </Tabs.Trigger>
           <Tabs.Trigger value="my-domains">
             My Domains
