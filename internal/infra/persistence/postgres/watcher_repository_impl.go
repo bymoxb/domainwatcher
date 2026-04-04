@@ -48,10 +48,10 @@ func (wr *WatcherRepositoryImpl) SearchWatcher(email vos.Email, order string, so
 
 func (wr *WatcherRepositoryImpl) GetById(watcherId uuid.UUID) (*watcher.Watcher, error) {
 	var entity WatcherModel
-	result := wr.DB.Where(&WatcherModel{ID: watcherId}).Find(&entity)
+	result := wr.DB.Where(&WatcherModel{ID: watcherId}).First(&entity)
 
 	if result.Error != nil {
-		return nil, errors.New("")
+		return nil, fmt.Errorf("Record not found with id %s", watcherId.String())
 	}
 
 	return MapWatcherToDomain(&entity), nil
@@ -93,12 +93,18 @@ func (wr *WatcherRepositoryImpl) UnDeleteWatcher(watcherId uuid.UUID) {
 
 func (wr *WatcherRepositoryImpl) TurnOnNotification(watcherId uuid.UUID) {
 	now := time.Now()
-	wr.DB.Model(&WatcherModel{ID: watcherId}).Updates(WatcherModel{NotificationEnabled: true, UpdatedAt: &now})
+	wr.DB.
+		Where(&WatcherModel{ID: watcherId}).
+		Select("notification_enabled", "updated_at").
+		UpdateColumns(&WatcherModel{NotificationEnabled: true, UpdatedAt: &now})
 }
 
 func (wr *WatcherRepositoryImpl) TurnOffNotification(watcherId uuid.UUID) {
 	now := time.Now()
-	wr.DB.Model(&WatcherModel{ID: watcherId}).Updates(WatcherModel{NotificationEnabled: false, UpdatedAt: &now})
+	wr.DB.
+		Where(&WatcherModel{ID: watcherId}).
+		Select("notification_enabled", "updated_at").
+		UpdateColumns(&WatcherModel{NotificationEnabled: false, UpdatedAt: &now})
 }
 
 func (wr *WatcherRepositoryImpl) GetWatchersToNotify(registryId uuid.UUID) []watcher.Watcher {

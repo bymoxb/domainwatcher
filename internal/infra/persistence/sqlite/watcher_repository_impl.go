@@ -92,12 +92,18 @@ func (wr *WatcherRepositoryImpl) UnDeleteWatcher(watcherId uuid.UUID) {
 
 func (wr *WatcherRepositoryImpl) TurnOnNotification(watcherId uuid.UUID) {
 	now := time.Now()
-	wr.DB.Model(&WatcherModel{ID: watcherId}).Updates(WatcherModel{NotificationEnabled: true, UpdatedAt: &now})
+	wr.DB.
+		Where(&WatcherModel{ID: watcherId}).
+		Select("notification_enabled", "updated_at").
+		UpdateColumns(&WatcherModel{NotificationEnabled: true, UpdatedAt: &now})
 }
 
 func (wr *WatcherRepositoryImpl) TurnOffNotification(watcherId uuid.UUID) {
 	now := time.Now()
-	wr.DB.Model(&WatcherModel{ID: watcherId}).Updates(WatcherModel{NotificationEnabled: false, UpdatedAt: &now})
+	wr.DB.
+		Where(&WatcherModel{ID: watcherId}).
+		Select("notification_enabled", "updated_at").
+		UpdateColumns(&WatcherModel{NotificationEnabled: false, UpdatedAt: &now})
 }
 
 func (wr *WatcherRepositoryImpl) GetWatchersToNotify(registryId uuid.UUID) []watcher.Watcher {
