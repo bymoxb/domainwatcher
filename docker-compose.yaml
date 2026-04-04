@@ -1,0 +1,11 @@
+services:
+  domainwatcher:
+    image: bymoxb/dw-app:latest
+    container_name: domainwatcher
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./config/app.db:/app/app.db
+    ports:
+      - "9876:9876"
