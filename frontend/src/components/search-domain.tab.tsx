@@ -29,7 +29,7 @@ const SearchDomain = () => {
           name="domain"
           placeholder="Enter a domain name"
           required
-          className="sm:col-span-2 md:col-span-4 lg:col-end-5"
+          className="sm:col-span-2 md:col-span-4 lg:col-span-5"
         />
         <Button loading={loading} disabled={loading} type="submit">Search</Button>
       </form>

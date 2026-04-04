@@ -37,7 +37,7 @@ const MyDomains = () => {
           required
           defaultValue={getQueryParam("email")}
           // value={form.email}
-          className="md:col-span-2 lg:col-end-3"
+          className="md:col-span-2 lg:col-span-3"
         // onChange={(value) => setForm((p) => ({ ...p, email: value }))}
         />
 
