@@ -58,7 +58,7 @@ func (rs *RegistryService) SearchRegistry(domain vos.Domain) *registry.Registry 
 			lastDate = *registry.UpdatedAt
 		}
 
-		if isMoreThan(lastDate, 1) {
+		if isMoreThan(lastDate, rs.daysLeftToExpire) {
 			registry = rs.RefreshRegistry(registry)
 		}
 
