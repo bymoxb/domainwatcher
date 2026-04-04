@@ -1,0 +1,48 @@
+name: Docker Build and Push to Docker Hub
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/dw-app
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Configura el motor de build (Buildx)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Inicia sesión en Docker Hub
+      - name: Log into Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Extrae metadatos y fuerza la etiqueta "latest"
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+
+      # Construye y sube la imagen
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # El uso de cache hace que los builds sean mucho más rápidos
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
