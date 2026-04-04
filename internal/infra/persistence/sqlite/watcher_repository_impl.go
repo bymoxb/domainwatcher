@@ -4,6 +4,7 @@ import (
 	"domainwatcher/internal/domain/vos"
 	"domainwatcher/internal/domain/watcher"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -35,7 +36,7 @@ func (wr *WatcherRepositoryImpl) SearchWatcher(email vos.Email, order string, so
 	case "created":
 		query.Order(clause.OrderByColumn{Column: clause.Column{Name: "created_at"}, Desc: desc})
 	default:
-		query.Order(clause.OrderByColumn{Column: clause.Column{Name: "Registry.registry_expires_at"}, Desc: false})
+		query.Order(clause.OrderByColumn{Column: clause.Column{Name: "Registry.registry_expires_at"}, Desc: desc})
 	}
 
 	var hits []*WatcherModel
@@ -47,10 +48,10 @@ func (wr *WatcherRepositoryImpl) SearchWatcher(email vos.Email, order string, so
 
 func (wr *WatcherRepositoryImpl) GetById(watcherId uuid.UUID) (*watcher.Watcher, error) {
 	var entity WatcherModel
-	result := wr.DB.Where(&WatcherModel{ID: watcherId}).Find(&entity)
+	result := wr.DB.Where(&WatcherModel{ID: watcherId}).First(&entity)
 
 	if result.Error != nil {
-		return nil, errors.New("Watcher not found")
+		return nil, fmt.Errorf("Record not found with id %s", watcherId.String())
 	}
 
 	return MapWatcherToDomain(&entity), nil
@@ -62,7 +63,7 @@ func (wr *WatcherRepositoryImpl) GetByRegistryIdAndEmail(email vos.Email, regist
 	result := wr.DB.Where(&WatcherModel{RegistryID: registryId, MailAddress: email.Value()}).First(&entity)
 
 	if result.Error != nil {
-		return nil, errors.New("Watcher not found")
+		return nil, fmt.Errorf("Record not found with id %s and email %s", registryId.String(), email.Value())
 	}
 
 	return MapWatcherToDomain(entity), nil
