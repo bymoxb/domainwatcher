@@ -5,6 +5,7 @@ import (
 	"domainwatcher/internal/domain/watcher"
 	"errors"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
@@ -30,18 +31,23 @@ func (wr *WatcherRepositoryImpl) SearchWatcher(email vos.Email, order string, so
 
 	switch order {
 	case "notification_status":
-		query.Order(clause.OrderByColumn{Column: clause.Column{Name: "notification_enabled"}, Desc: desc})
+		query.Order(clause.OrderByColumn{Column: clause.Column{Name: "dw_watcher.notification_enabled"}, Desc: desc})
 	case "domain":
 		query.Order(clause.OrderByColumn{Column: clause.Column{Name: "Registry.domain"}, Desc: desc})
 	case "created":
-		query.Order(clause.OrderByColumn{Column: clause.Column{Name: "created_at"}, Desc: desc})
+		query.Order(clause.OrderByColumn{Column: clause.Column{Name: "dw_watcher.created_at"}, Desc: desc})
 	default:
 		query.Order(clause.OrderByColumn{Column: clause.Column{Name: "Registry.registry_expires_at"}, Desc: desc})
 	}
 
 	var hits []*WatcherModel
 
-	query.Find(&hits)
+	result := query.Find(&hits)
+
+	if result.Error != nil {
+		slog.Error("Error searching watchers", "error", result.Error)
+		return []*watcher.Watcher{}
+	}
 
 	return MapWatcherToDomainList(hits)
 }
