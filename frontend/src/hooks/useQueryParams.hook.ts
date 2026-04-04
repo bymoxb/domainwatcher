@@ -1,11 +1,11 @@
 export function useQueryParams() {
 
-  const getQueryParam = (key: string): string => {
+  const getQueryParam = (key: string, defaultValue: string = ""): string => {
     try {
       const params = new URLSearchParams(window.location.search);
-      return params.get(key) ?? ""
+      return params.get(key) ?? defaultValue
     } catch (error) {
-      return ""
+      return defaultValue
     }
   }
 

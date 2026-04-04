@@ -43,7 +43,7 @@ const MyDomains = () => {
 
         <Select.Root
           name="order"
-          defaultValue={getQueryParam("order")}
+          defaultValue={getQueryParam("order", "expires")}
         // value={form.order}
         // onValueChange={(value) => {
         //   setForm((p) => ({ ...p, order: value }));
@@ -63,7 +63,7 @@ const MyDomains = () => {
 
         <Select.Root
           name="sort"
-          defaultValue={getQueryParam("sort")}
+          defaultValue={getQueryParam("sort","asc")}
         // value={form.direction}
         // onValueChange={(value) => {
         //   setForm((p) => ({ ...p, direction: value }));
