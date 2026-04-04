@@ -18,15 +18,19 @@ import {
   Inset,
   Strong,
 } from "@radix-ui/themes";
-import { useActionState } from "react";
+import React, { useActionState, useState } from "react";
 
 type EmptyAction = null
 
-export const ActionButtons = ({ watcher }: { watcher: WatcherResponse }) => {
+export const ActionButtons: React.FunctionComponent<{ watcher: WatcherResponse, refresh?: () => void }> = ({ watcher: watcherOriginal, refresh }) => {
+
+  const [watcher, setWatcher] = useState<WatcherResponse>(watcherOriginal)
+
   const [, actionRemove, pendingRemove] = useActionState<EmptyAction, FormData>(
     async (_p: EmptyAction, f: FormData) => {
       const watcherId = f.get("watcherId")?.toString() ?? ""
       await fetch("/api/watcher/:id".replace(":id", watcherId), { method: "DELETE" })
+      if (refresh) refresh()
       return null
     },
     null
@@ -34,9 +38,19 @@ export const ActionButtons = ({ watcher }: { watcher: WatcherResponse }) => {
 
   const [, actionSChanged, pendingSChanged] = useActionState<EmptyAction, FormData>(
     async (_p: EmptyAction, f: FormData) => {
-      const watcherId = f.get("watcherId")?.toString() ?? ""
-      await fetch("/api/watcher/:id".replace(":id", watcherId), { method: "PATCH" })
-      return null
+      try {
+        setWatcher((prev) => ({ ...prev, notificationEnabled: !prev.notificationEnabled }))
+        const watcherId = f.get("watcherId")?.toString() ?? ""
+        const raw = await fetch("/api/watcher/:id".replace(":id", watcherId), { method: "PATCH" })
+        if (!raw.ok) {
+          setWatcher(watcherOriginal)
+          return null
+        }
+        return null
+      } catch (error) {
+        setWatcher(watcherOriginal)
+        return null
+      }
     },
     null
   );

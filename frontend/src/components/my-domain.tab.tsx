@@ -14,6 +14,7 @@ const MyDomains = () => {
     error,
     loading,
     onSubmit,
+    refresh,
   } = useWatcher(getFormDataFromQueryParams())
 
   return (
@@ -87,6 +88,7 @@ const MyDomains = () => {
       {error && <Alert title="Error">{error}</Alert>}
 
       <DomainTable
+        refresh={refresh}
         loading={loading}
         data={{ watcher: data }}
       />

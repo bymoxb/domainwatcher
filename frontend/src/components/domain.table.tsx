@@ -18,9 +18,11 @@ type DomainTableItems = {
 export function DomainTable({
   data,
   loading,
+  refresh,
 }: {
   data: DomainTableItems;
   loading?: boolean;
+  refresh?: () => void;
 }) {
   return (
     <Table.Root variant="surface">
@@ -121,7 +123,7 @@ export function DomainTable({
               <Table.Cell>
                 <Flex gap="2" justify="center">
                   {data.registry && <NotifyButton registry={data.registry} />}
-                  {!data.registry && <ActionButtons key={i} watcher={item} />}
+                  {!data.registry && <ActionButtons key={i} watcher={item} refresh={refresh} />}
                 </Flex>
               </Table.Cell>
             </Table.Row>

@@ -5,6 +5,7 @@ export function useWatcher(defaultValues?: FormData) {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState([])
   const [error, setError] = useState<string | null>(null)
+  const [token, setToken] = useState(1)
 
   const onSubmit = async (form: FormData) => {
     setLoading(true)
@@ -41,12 +42,13 @@ export function useWatcher(defaultValues?: FormData) {
     if (!defaultValues) return
     if (!defaultValues.get("email")) return
     onSubmit(defaultValues)
-  }, [])
+  }, [token])
 
   return {
     loading,
     data,
     error,
     onSubmit,
+    refresh: () => setToken((p) => p + 1)
   }
 }
