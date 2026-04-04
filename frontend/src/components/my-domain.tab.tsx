@@ -1,6 +1,6 @@
 import { useQueryParams } from "@/hooks/useQueryParams.hook"
 import { useWatcher } from "@/hooks/useWatcher.hook"
-import { Select } from "@radix-ui/themes"
+import { Button, Select } from "@radix-ui/themes"
 import { Alert } from "./detail"
 import { DomainTable } from "./domain.table"
 import Input from "./input"
@@ -26,7 +26,7 @@ const MyDomains = () => {
           onSubmit(form)
           setQueryParamFromForm(form)
         }}
-        className="gap-2 grid sm:grid-cols-3 md:grid-cols-5"
+        className="gap-2 grid grid-cols-1 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6"
       >
         <Input
           autoFocus
@@ -37,7 +37,7 @@ const MyDomains = () => {
           required
           defaultValue={getQueryParam("email")}
           // value={form.email}
-          className="md:col-span-3"
+          className="md:col-span-2 lg:col-end-3"
         // onChange={(value) => setForm((p) => ({ ...p, email: value }))}
         />
 
@@ -79,10 +79,7 @@ const MyDomains = () => {
           </Select.Content>
         </Select.Root>
 
-        {/* <Button type="submit">Search</Button> */}
-        {/* <div className="col-span-5">
-        <pre>{JSON.stringify({ form })}</pre>
-      </div> */}
+        <Button loading={loading} disabled={loading} type="submit">Search</Button>
       </form>
 
       {error && <Alert title="Error">{error}</Alert>}

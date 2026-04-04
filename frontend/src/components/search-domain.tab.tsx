@@ -2,6 +2,7 @@ import { useSearchRegistry } from "@/hooks/useRegistry.hook"
 import { Alert } from "./detail"
 import { DomainTable } from "./domain.table"
 import Input from "./input"
+import { Button } from "@radix-ui/themes"
 
 const SearchDomain = () => {
 
@@ -19,6 +20,7 @@ const SearchDomain = () => {
           e.preventDefault()
           onSubmit(new FormData(e.currentTarget))
         }}
+        className="gap-2 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6"
       >
         <Input
           autoFocus
@@ -27,7 +29,9 @@ const SearchDomain = () => {
           name="domain"
           placeholder="Enter a domain name"
           required
+          className="sm:col-span-2 md:col-span-4 lg:col-end-5"
         />
+        <Button loading={loading} disabled={loading} type="submit">Search</Button>
       </form>
 
       {!loading && error && (
