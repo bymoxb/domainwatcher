@@ -30,7 +30,7 @@ COPY --from=frontend-builder /app/dist ./internal/infra/http/static/dist
 RUN CGO_ENABLED=1 GOOS=linux go build ./cmd/server/main.go
 
 ### ------------------------------------------------------------------------------
-FROM alpine:latest
+FROM alpine:3.21
 
 RUN apk add --no-cache ca-certificates tzdata
 
