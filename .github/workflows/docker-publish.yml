@@ -3,6 +3,14 @@ name: Docker Build and Push to Docker Hub
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - "cmd/**"
+      - "internal/**"
+      - "frontend/**"
+      - "Dockerfile"
+      - "go.mod"
+      - "go.sum"
+      - "docker-compose.yaml"
 
 env:
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/dw-app
