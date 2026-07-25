@@ -1,9 +1,10 @@
 package services
 
 import (
-	"domainwatcher/internal/domain/vos"
-	"domainwatcher/internal/domain/watcher"
 	"errors"
+
+	"github.com/bymoxb/domainwatcher/internal/domain/vos"
+	"github.com/bymoxb/domainwatcher/internal/domain/watcher"
 
 	"github.com/google/uuid"
 )

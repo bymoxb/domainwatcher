@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"context"
-	"domainwatcher/internal/infra/config"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,6 +9,8 @@ import (
 	neturl "net/url"
 	"strings"
 	"time"
+
+	"github.com/bymoxb/domainwatcher/internal/infra/config"
 )
 
 type HttpClient struct {

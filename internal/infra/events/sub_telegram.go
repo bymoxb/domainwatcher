@@ -1,12 +1,13 @@
 package events
 
 import (
-	"domainwatcher/internal/domain/events"
-	"domainwatcher/internal/infra/config"
-	"domainwatcher/internal/infra/helpers"
 	"fmt"
 	"log/slog"
 	"strings"
+
+	"github.com/bymoxb/domainwatcher/internal/domain/events"
+	"github.com/bymoxb/domainwatcher/internal/infra/config"
+	"github.com/bymoxb/domainwatcher/internal/infra/helpers"
 )
 
 type SubTelegram struct {

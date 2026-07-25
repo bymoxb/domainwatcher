@@ -1,8 +1,8 @@
 package events
 
 import (
-	"domainwatcher/internal/domain/registry"
-	"domainwatcher/internal/domain/watcher"
+	"github.com/bymoxb/domainwatcher/internal/domain/registry"
+	"github.com/bymoxb/domainwatcher/internal/domain/watcher"
 )
 
 type Broker interface {

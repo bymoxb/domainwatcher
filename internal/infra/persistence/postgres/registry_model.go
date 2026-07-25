@@ -1,9 +1,10 @@
 package postgres
 
 import (
-	"domainwatcher/internal/domain/registry"
-	"domainwatcher/internal/domain/vos"
 	"time"
+
+	"github.com/bymoxb/domainwatcher/internal/domain/registry"
+	"github.com/bymoxb/domainwatcher/internal/domain/vos"
 
 	"github.com/google/uuid"
 )

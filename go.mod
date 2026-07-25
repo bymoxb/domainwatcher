@@ -1,4 +1,4 @@
-module domainwatcher
+module github.com/bymoxb/domainwatcher
 
 go 1.25.6
 

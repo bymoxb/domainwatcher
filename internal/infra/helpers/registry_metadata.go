@@ -1,8 +1,9 @@
 package helpers
 
 import (
-	"domainwatcher/internal/domain/registry"
 	"time"
+
+	"github.com/bymoxb/domainwatcher/internal/domain/registry"
 )
 
 type RegistryNotificaionData struct {

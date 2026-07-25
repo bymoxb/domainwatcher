@@ -1,7 +1,7 @@
 package watcher
 
 import (
-	"domainwatcher/internal/domain/vos"
+	"github.com/bymoxb/domainwatcher/internal/domain/vos"
 
 	"github.com/google/uuid"
 )

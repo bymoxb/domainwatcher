@@ -1,9 +1,10 @@
 package main
 
 import (
-	"domainwatcher/internal/infra/app"
 	"log/slog"
 	"os"
+
+	"github.com/bymoxb/domainwatcher/internal/infra/app"
 )
 
 func main() {

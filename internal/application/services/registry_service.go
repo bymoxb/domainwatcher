@@ -1,12 +1,13 @@
 package services
 
 import (
-	"domainwatcher/internal/domain/events"
-	"domainwatcher/internal/domain/registry"
-	"domainwatcher/internal/domain/vos"
-	"domainwatcher/internal/domain/watcher"
 	"log/slog"
 	"time"
+
+	"github.com/bymoxb/domainwatcher/internal/domain/events"
+	"github.com/bymoxb/domainwatcher/internal/domain/registry"
+	"github.com/bymoxb/domainwatcher/internal/domain/vos"
+	"github.com/bymoxb/domainwatcher/internal/domain/watcher"
 )
 
 type RegistryService struct {

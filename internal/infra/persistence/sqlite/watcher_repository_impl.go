@@ -1,12 +1,13 @@
 package sqlite
 
 import (
-	"domainwatcher/internal/domain/vos"
-	"domainwatcher/internal/domain/watcher"
 	"errors"
 	"fmt"
 	"log/slog"
 	"time"
+
+	"github.com/bymoxb/domainwatcher/internal/domain/vos"
+	"github.com/bymoxb/domainwatcher/internal/domain/watcher"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
