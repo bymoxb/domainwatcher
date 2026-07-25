@@ -1,7 +1,7 @@
 package registry
 
 import (
-	"domainwatcher/internal/domain/vos"
+	"github.com/bymoxb/domainwatcher/internal/domain/vos"
 )
 
 type RegistryResource interface {

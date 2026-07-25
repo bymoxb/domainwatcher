@@ -1,11 +1,12 @@
 package controllers
 
 import (
-	"domainwatcher/internal/application/services"
-	"domainwatcher/internal/domain/registry"
-	"domainwatcher/internal/domain/vos"
-	"domainwatcher/internal/infra/http/dtos"
 	"net/http"
+
+	"github.com/bymoxb/domainwatcher/internal/application/services"
+	"github.com/bymoxb/domainwatcher/internal/domain/registry"
+	"github.com/bymoxb/domainwatcher/internal/domain/vos"
+	"github.com/bymoxb/domainwatcher/internal/infra/http/dtos"
 
 	"github.com/gin-gonic/gin"
 )

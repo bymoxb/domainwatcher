@@ -8,8 +8,9 @@
 package events
 
 import (
-	"domainwatcher/internal/domain/events"
 	"sync"
+
+	"github.com/bymoxb/domainwatcher/internal/domain/events"
 )
 
 // EventDispatcher manages the list of subscribers and event distribution.

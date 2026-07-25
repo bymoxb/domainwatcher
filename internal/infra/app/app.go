@@ -1,19 +1,20 @@
 package app
 
 import (
-	"domainwatcher/internal/application/services"
-	eventsdomain "domainwatcher/internal/domain/events"
-	"domainwatcher/internal/domain/registry"
-	"domainwatcher/internal/domain/watcher"
-	"domainwatcher/internal/infra/adapters"
-	"domainwatcher/internal/infra/config"
-	eventsinfra "domainwatcher/internal/infra/events"
-	"domainwatcher/internal/infra/helpers"
-	"domainwatcher/internal/infra/http/controllers"
-	"domainwatcher/internal/infra/http/static"
-	"domainwatcher/internal/infra/persistence/postgres"
-	"domainwatcher/internal/infra/persistence/sqlite"
 	"fmt"
+
+	"github.com/bymoxb/domainwatcher/internal/application/services"
+	eventsdomain "github.com/bymoxb/domainwatcher/internal/domain/events"
+	"github.com/bymoxb/domainwatcher/internal/domain/registry"
+	"github.com/bymoxb/domainwatcher/internal/domain/watcher"
+	"github.com/bymoxb/domainwatcher/internal/infra/adapters"
+	"github.com/bymoxb/domainwatcher/internal/infra/config"
+	eventsinfra "github.com/bymoxb/domainwatcher/internal/infra/events"
+	"github.com/bymoxb/domainwatcher/internal/infra/helpers"
+	"github.com/bymoxb/domainwatcher/internal/infra/http/controllers"
+	"github.com/bymoxb/domainwatcher/internal/infra/http/static"
+	"github.com/bymoxb/domainwatcher/internal/infra/persistence/postgres"
+	"github.com/bymoxb/domainwatcher/internal/infra/persistence/sqlite"
 
 	"github.com/gin-gonic/gin"
 	"github.com/robfig/cron/v3"

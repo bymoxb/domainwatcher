@@ -1,13 +1,14 @@
 package adapters
 
 import (
-	"domainwatcher/internal/domain/registry"
-	"domainwatcher/internal/domain/vos"
-	"domainwatcher/internal/infra/helpers"
 	"fmt"
 	"log/slog"
 	"net/url"
 	"time"
+
+	"github.com/bymoxb/domainwatcher/internal/domain/registry"
+	"github.com/bymoxb/domainwatcher/internal/domain/vos"
+	"github.com/bymoxb/domainwatcher/internal/infra/helpers"
 
 	"github.com/google/uuid"
 )

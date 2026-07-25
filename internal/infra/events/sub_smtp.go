@@ -2,13 +2,14 @@ package events
 
 import (
 	"bytes"
-	"domainwatcher/internal/domain/events"
-	"domainwatcher/internal/infra/config"
-	"domainwatcher/internal/infra/helpers"
 	"log"
 	"log/slog"
 	"text/template"
 	"time"
+
+	"github.com/bymoxb/domainwatcher/internal/domain/events"
+	"github.com/bymoxb/domainwatcher/internal/infra/config"
+	"github.com/bymoxb/domainwatcher/internal/infra/helpers"
 
 	"gopkg.in/gomail.v2"
 )

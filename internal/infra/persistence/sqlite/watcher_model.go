@@ -1,10 +1,11 @@
 package sqlite
 
 import (
-	"domainwatcher/internal/domain/registry"
-	"domainwatcher/internal/domain/vos"
-	"domainwatcher/internal/domain/watcher"
 	"time"
+
+	"github.com/bymoxb/domainwatcher/internal/domain/registry"
+	"github.com/bymoxb/domainwatcher/internal/domain/vos"
+	"github.com/bymoxb/domainwatcher/internal/domain/watcher"
 
 	"github.com/google/uuid"
 )

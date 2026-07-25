@@ -1,8 +1,8 @@
 package events
 
 import (
-	"domainwatcher/internal/application/services"
-	"domainwatcher/internal/domain/events"
+	"github.com/bymoxb/domainwatcher/internal/application/services"
+	"github.com/bymoxb/domainwatcher/internal/domain/events"
 )
 
 type SubRegistry struct {
