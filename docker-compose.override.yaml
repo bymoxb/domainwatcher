@@ -1,0 +1,6 @@
+services:
+  domainwatcher:
+    build:
+      context: .
+    ports:
+      - "9876:9876"
