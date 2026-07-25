@@ -7,6 +7,8 @@ It includes:
 - A React frontend (search + watchlist UI)
 - SQLite or PostgreSQL storage
 
+🚀 **Try the live application:** https://domainwatcher.illapa.dev/
+
 ## Why this project
 
 - Monitor domain expiration from one interface
