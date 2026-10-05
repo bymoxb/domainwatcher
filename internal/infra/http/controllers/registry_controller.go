@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/bymoxb/domainwatcher/internal/application/services"
 	"github.com/bymoxb/domainwatcher/internal/domain/registry"
@@ -50,25 +51,23 @@ func (rc *RegistryController) SearchRegistry(c *gin.Context) {
 }
 
 func MapRegistryToDTO(registry *registry.Registry) dtos.Registry {
-
-	var registryUpdatedAt string
-	// var registrar *string
-
-	if registry.RegistryUpdatedAt != nil {
-		registryUpdatedAt = registry.RegistryUpdatedAt.String()
-	}
-
-	// if registry.Registrar != nil {
-	// 	registrar = registry.Registrar
-	// }
-
 	return dtos.Registry{
 		ID:                registry.ID.String(),
 		Domain:            registry.Domain.Value(),
+		Status:            string(registry.Status),
 		Origin:            registry.Origin,
 		Registrar:         registry.Registrar,
-		RegistryCreatedAt: registry.RegistryCreatedAt.String(),
-		RegistryUpdatedAt: &registryUpdatedAt,
-		RegistryExpiresAt: registry.RegistryExpiresAt.String(),
+		RegistryCreatedAt: timeToString(registry.RegistryCreatedAt),
+		RegistryUpdatedAt: timeToString(registry.RegistryUpdatedAt),
+		RegistryExpiresAt: timeToString(registry.RegistryExpiresAt),
 	}
+}
+
+func timeToString(t *time.Time) *string {
+	if t == nil {
+		return nil
+	}
+
+	s := t.String()
+	return &s
 }

@@ -122,13 +122,16 @@ func (ctx WhoisJsonAdapter) GetData(domain vos.Domain) *registry.Registry {
 		registrar = response.Registrar.Name
 	}
 
+	adapterName = urlParsed.Hostname()
+
 	return &registry.Registry{
 		ID:                uuid.New(),
 		Domain:            domain,
-		RegistryCreatedAt: registration,
-		RegistryExpiresAt: expiration,
+		Status:            vos.StatusMonitored,
+		RegistryCreatedAt: &registration,
+		RegistryExpiresAt: &expiration,
 		RegistryUpdatedAt: changed,
-		Origin:            urlParsed.Hostname(),
+		Origin:            &adapterName,
 		Registrar:         registrar,
 	}
 }

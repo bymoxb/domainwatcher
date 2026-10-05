@@ -17,10 +17,16 @@ type RegistryNotificaionData struct {
 
 func ExtractRegistryNotificaionData(item registry.Registry) RegistryNotificaionData {
 	domainName := item.Domain.Value()
-	expirationDate := item.RegistryExpiresAt.Format("2006-01-02")
+
+	var expirationDate string
+	if item.RegistryExpiresAt != nil {
+		expirationDate = item.RegistryExpiresAt.Format("2006-01-02")
+	}
+
 	daysRemaining := calcDaysLeft(item.RegistryExpiresAt)
 
-	isExpired := daysRemaining <= 0
+	isExpired := item.RegistryExpiresAt != nil &&
+		time.Now().After(*item.RegistryExpiresAt)
 
 	domainStatus := "expiring soon"
 	if isExpired {
@@ -32,11 +38,20 @@ func ExtractRegistryNotificaionData(item registry.Registry) RegistryNotificaionD
 		ExpirationDate: expirationDate,
 		DaysRemaining:  daysRemaining,
 		IsExpired:      isExpired,
-		Subject:        "DomainWatcher: " + domainStatus + " " + domainStatus,
+		Subject:        "DomainWatcher: " + domainName + " " + domainStatus,
 		DomainStatus:   domainStatus,
 	}
 }
 
-func calcDaysLeft(expiration time.Time) int {
-	return int(time.Until(expiration).Hours() / 24)
+func calcDaysLeft(expiration *time.Time) int {
+	if expiration == nil {
+		return 0
+	}
+
+	duration := time.Until(*expiration)
+	if duration <= 0 {
+		return 0
+	}
+
+	return int(duration.Hours() / 24)
 }

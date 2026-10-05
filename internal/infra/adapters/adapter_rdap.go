@@ -86,14 +86,17 @@ func (ctx RdapAdapter) GetData(domain vos.Domain) *registry.Registry {
 
 	registrar := extractRegistrar(response.Entities)
 
+	adapterName := urlParsed.Hostname()
+
 	return &registry.Registry{
 		ID:                uuid.New(),
 		Domain:            domain,
+		Status:            vos.StatusMonitored,
 		Registrar:         registrar,
-		RegistryCreatedAt: *registration,
-		RegistryExpiresAt: *expiration,
+		RegistryCreatedAt: registration,
+		RegistryExpiresAt: expiration,
 		RegistryUpdatedAt: changed,
-		Origin:            urlParsed.Hostname(),
+		Origin:            &adapterName,
 	}
 }
 

@@ -50,27 +50,27 @@ func (rs *RegistryService) SearchInAdapters(domain vos.Domain) *registry.Registr
 }
 
 func (rs *RegistryService) SearchRegistry(domain vos.Domain) *registry.Registry {
-	registry := rs.rr.SearchRegistry(domain)
+	reg := rs.rr.SearchRegistry(domain)
 
-	if registry != nil {
+	if reg != nil {
 
-		var lastDate = registry.CreatedAt
-		if registry.UpdatedAt != nil {
-			lastDate = *registry.UpdatedAt
+		var lastDate = reg.CreatedAt
+		if reg.UpdatedAt != nil {
+			lastDate = *reg.UpdatedAt
 		}
 
 		if isMoreThan(lastDate, rs.daysLeftToExpire) {
-			registry = rs.RefreshRegistry(registry)
+			reg = rs.RefreshRegistry(reg)
 		}
 
-		return registry
+		return reg
 	}
 
-	if registry = rs.SearchInAdapters(domain); registry != nil {
-		return rs.rr.CreateRegistry(*registry)
+	if reg = rs.SearchInAdapters(domain); reg != nil {
+		return rs.rr.CreateRegistry(*reg)
 	}
 
-	return nil
+	return rs.rr.CreateRegistry(registry.NewRegistry(domain, vos.StatusWatchlist))
 }
 
 func (rs *RegistryService) RefreshRegistry(registry *registry.Registry) *registry.Registry {

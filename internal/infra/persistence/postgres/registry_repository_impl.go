@@ -23,6 +23,7 @@ func (rr *RegistryRepositoryImpl) CreateRegistry(model registry.Registry) *regis
 	entity := &RegistryModel{
 		ID:                model.ID,
 		Domain:            model.Domain.Value(),
+		Status:            string(model.Status),
 		Origin:            model.Origin,
 		Registrar:         model.Registrar,
 		RegistryCreatedAt: model.RegistryCreatedAt,
@@ -69,6 +70,7 @@ func (rr *RegistryRepositoryImpl) UpdateRegistry(registryId uuid.UUID, model reg
 		Model(&RegistryModel{ID: registryId}).
 		Updates(RegistryModel{
 			Origin:            model.Origin,
+			Status:            string(model.Status),
 			Registrar:         model.Registrar,
 			RegistryCreatedAt: model.RegistryCreatedAt,
 			RegistryUpdatedAt: model.RegistryUpdatedAt,
