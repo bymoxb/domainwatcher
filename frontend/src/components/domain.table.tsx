@@ -2,12 +2,13 @@ import { calcDaysLeft, safeDateString } from "@/libs/date";
 import { buildRdapLink, buildWhoisLink } from "@/libs/links";
 // import { RegistryResponse } from "@/modules/registry/application/dtos/RegistryResponse";
 // import { WatcherResponse } from "@/modules/watcher/application/dtos/WatcherResponse";
-import type { RegistryResponse } from "@/types/registry.type";
+import { RegistryStatus, type RegistryResponse } from "@/types/registry.type";
 import type { WatcherResponse } from "@/types/watcher.type";
 import { Flex, Skeleton, Table } from "@radix-ui/themes";
 import { ActionButtons, NotifyButton } from "./action.button";
 import DaysBadge from "./days.badge";
 import LinkButton from "./link.button";
+import WaitingBadge from "./waiting.badge";
 
 
 type DomainTableItems = {
@@ -92,7 +93,7 @@ export function DomainTable({
                 {item?.registry?.domain}
               </Table.RowHeaderCell>
               <Table.Cell>
-                {item?.registry?.registrar}
+                {item?.registry?.registrar ?? "-"}
               </Table.Cell>
               <Table.Cell>
                 {safeDateString(item?.registry?.registryCreatedAt)}
@@ -104,9 +105,12 @@ export function DomainTable({
                 {safeDateString(item?.registry?.registryExpiresAt)}
               </Table.Cell>
               <Table.Cell>
-                <DaysBadge
-                  days={calcDaysLeft(item?.registry?.registryExpiresAt)}
-                />
+                {(() => {
+                  if (item.registry.status != RegistryStatus.WATCHLIST) {
+                    return (<DaysBadge days={calcDaysLeft(item?.registry?.registryExpiresAt)} />)
+                  }
+                  return <WaitingBadge />
+                })()}
               </Table.Cell>
               <Table.Cell>
                 <Flex gap="1">

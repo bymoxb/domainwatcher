@@ -15,11 +15,11 @@ export function calcDaysLeft(limit: Date | string | null | undefined): number {
 export function safeDateString(
   date: undefined | Date | string | null | number
 ): string {
-  if (!date) return "";
+  if (!date) return "-";
 
   try {
     return new Date(date).toLocaleDateString();
   } catch (error) {
-    return "";
+    return "-";
   }
 }
