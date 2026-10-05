@@ -90,6 +90,8 @@ func (rr *RegistryRepositoryImpl) GetAboutExpiredRegistries(days int) []registry
 
 	var origins []RegistryModel
 	result := rr.DB.
+		Where("status = ?", vos.StatusMonitored).
+		Where("registry_expires_at IS NOT NULL").
 		Where("registry_expires_at < ?", final).
 		Find(&origins)
 
