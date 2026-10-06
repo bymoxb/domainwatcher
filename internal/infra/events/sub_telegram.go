@@ -10,6 +10,13 @@ import (
 	"github.com/bymoxb/domainwatcher/internal/infra/helpers"
 )
 
+type TelegramResponse struct {
+	OK     bool `json:"ok"`
+	Result struct {
+		MessageID int64 `json:"message_id"`
+	} `json:"result"`
+}
+
 type SubTelegram struct {
 	cfg        *config.Config
 	httpClient helpers.HttpClient
@@ -45,7 +52,7 @@ func (ctx *SubTelegram) send(event events.NotificationData) {
 		return
 	}
 
-	var result interface{}
+	var result TelegramResponse
 
 	meta := helpers.ExtractRegistryNotificaionData(event.Registry)
 
@@ -63,7 +70,7 @@ func (ctx *SubTelegram) send(event events.NotificationData) {
 		map[string]string{
 			"Content-Type": "application/x-www-form-urlencoded",
 		},
-		result)
+		&result)
 
 	if err != nil {
 		slog.Error("Could not send Telegram notification", "error", err, "domain", event.Registry.Domain.Value())
