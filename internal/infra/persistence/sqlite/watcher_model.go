@@ -39,6 +39,9 @@ func MapWatcherToDomain(entity *WatcherModel) *watcher.Watcher {
 		NotificationEnabled: entity.NotificationEnabled,
 		RegistryID:          entity.RegistryID,
 		Registry:            registry,
+		CreatedAt:           entity.CreatedAt,
+		UpdatedAt:           entity.UpdatedAt,
+		DeletedAt:           entity.DeletedAt,
 	}
 }
 

@@ -91,11 +91,11 @@ func (wr *WatcherRepositoryImpl) CreateWatcher(model watcher.Watcher) (*uuid.UUI
 
 func (wr *WatcherRepositoryImpl) DeleteWatcher(watcherId uuid.UUID) {
 	now := time.Now()
-	wr.DB.Model(&WatcherModel{ID: watcherId}).Updates(WatcherModel{DeletedAt: &now})
+	wr.DB.Model(&WatcherModel{ID: watcherId}).Update("deleted_at", now).Update("notification_enabled", false)
 }
 
 func (wr *WatcherRepositoryImpl) UnDeleteWatcher(watcherId uuid.UUID) {
-	wr.DB.Model(&WatcherModel{ID: watcherId}).Updates(WatcherModel{DeletedAt: nil})
+	wr.DB.Model(&WatcherModel{ID: watcherId}).Update("deleted_at", nil)
 }
 
 func (wr *WatcherRepositoryImpl) TurnOnNotification(watcherId uuid.UUID) {
