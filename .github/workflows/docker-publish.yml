@@ -14,6 +14,9 @@ on:
 env:
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/dw-app
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
