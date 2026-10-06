@@ -14,7 +14,7 @@ type RegistryService struct {
 	rr               registry.RegistryRepository
 	wr               watcher.WatcherRepository
 	adapters         []registry.RegistryResource
-	dispatcher       events.Broker
+	broker           events.Broker
 	daysLeftToExpire int
 }
 
@@ -22,7 +22,7 @@ func NewRegistryService(rr registry.RegistryRepository, wr watcher.WatcherReposi
 	adapters []registry.RegistryResource,
 	dispatcher events.Broker,
 	daysLeftToExpire int) *RegistryService {
-	return &RegistryService{rr: rr, adapters: adapters, daysLeftToExpire: daysLeftToExpire, dispatcher: dispatcher, wr: wr}
+	return &RegistryService{rr: rr, adapters: adapters, daysLeftToExpire: daysLeftToExpire, broker: dispatcher, wr: wr}
 }
 
 func (rs *RegistryService) CheckRegistryStatus() {
@@ -32,7 +32,20 @@ func (rs *RegistryService) CheckRegistryStatus() {
 
 		watchers := rs.wr.GetWatchersToNotify(r.ID)
 
-		rs.dispatcher.Publish(events.Event{Registry: r, Watchers: watchers})
+		rs.broker.Publish(events.Event{
+			Topic: events.TopicNotification,
+			Content: events.NotificationData{
+				Registry: r,
+				Watchers: watchers,
+			},
+		})
+
+		rs.broker.Publish(events.Event{
+			Topic: events.TopicRegistryChanged,
+			Content: events.RegistryChangedData{
+				Registry: r,
+			},
+		})
 	}
 }
 

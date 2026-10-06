@@ -1,20 +1,18 @@
 package events
 
-import (
-	"github.com/bymoxb/domainwatcher/internal/domain/registry"
-	"github.com/bymoxb/domainwatcher/internal/domain/watcher"
+type Topic string
+
+const (
+	TopicRegistryChanged Topic = "registry.changed"
+	TopicNotification    Topic = "notification"
 )
 
 type Broker interface {
-	Subscribe() chan Event
+	Subscribe(topics ...Topic) (<-chan Event, func())
 	Publish(event Event)
 }
 
 type Event struct {
-	Registry registry.Registry
-	Watchers []watcher.Watcher
-}
-
-type Subscriber interface {
-	Subscribe(channel chan Event)
+	Topic   Topic
+	Content any
 }

@@ -1,6 +1,8 @@
 package events
 
 import (
+	"log/slog"
+
 	"github.com/bymoxb/domainwatcher/internal/application/services"
 	"github.com/bymoxb/domainwatcher/internal/domain/events"
 )
@@ -13,8 +15,19 @@ func NewSubRegistry(rs services.RegistryService) *SubRegistry {
 	return &SubRegistry{rs: rs}
 }
 
-func (ctx *SubRegistry) Subscribe(channel chan events.Event) {
+func (ctx *SubRegistry) Run(channel <-chan events.Event) {
 	for event := range channel {
-		ctx.rs.RefreshRegistry(&event.Registry)
+		data, ok := event.Content.(events.RegistryChangedData)
+
+		if !ok {
+			slog.Error(
+				"invalid event data",
+				"topic", event.Topic,
+				"expected", "RegistryChangedData",
+			)
+			continue
+		}
+
+		ctx.rs.RefreshRegistry(&data.Registry)
 	}
 }

@@ -22,37 +22,51 @@ func NewSubTelegram(cfg *config.Config, httpClient helpers.HttpClient) *SubTeleg
 	}
 }
 
-func (ctx *SubTelegram) Subscribe(channel chan events.Event) {
+func (ctx *SubTelegram) Run(channel <-chan events.Event) {
 	for event := range channel {
+		data, ok := event.Content.(events.NotificationData)
 
-		if len(event.Watchers) == 0 {
+		if !ok {
+			slog.Error(
+				"invalid event data",
+				"topic", event.Topic,
+				"expected", "NotificationData",
+			)
 			continue
 		}
 
-		var result interface{}
+		ctx.send(data)
+	}
+}
 
-		meta := helpers.ExtractRegistryNotificaionData(event.Registry)
+func (ctx *SubTelegram) send(event events.NotificationData) {
 
-		message := fmt.Sprintf("🔔 %s %s\nExpiration date: %s\nDays remaining: %d", meta.DomainName, meta.DomainStatus, meta.ExpirationDate, meta.DaysRemaining)
+	if len(event.Watchers) == 0 {
+		return
+	}
 
-		message = escapeMarkdownV2(message)
+	var result interface{}
 
-		err := ctx.httpClient.Post(
-			fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", ctx.cfg.TGRAMBotToken),
-			map[string]string{
-				"chat_id":    ctx.cfg.TGRAMChatId,
-				"text":       message,
-				"parse_mode": "MarkdownV2",
-			},
-			map[string]string{
-				"Content-Type": "application/x-www-form-urlencoded",
-			},
-			result)
+	meta := helpers.ExtractRegistryNotificaionData(event.Registry)
 
-		if err != nil {
-			slog.Error("Could not send Telegram notification", "error", err, "domain", event.Registry.Domain.Value())
-		}
+	message := fmt.Sprintf("🔔 %s %s\nExpiration date: %s\nDays remaining: %d", meta.DomainName, meta.DomainStatus, meta.ExpirationDate, meta.DaysRemaining)
 
+	message = escapeMarkdownV2(message)
+
+	err := ctx.httpClient.Post(
+		fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", ctx.cfg.TGRAMBotToken),
+		map[string]string{
+			"chat_id":    ctx.cfg.TGRAMChatId,
+			"text":       message,
+			"parse_mode": "MarkdownV2",
+		},
+		map[string]string{
+			"Content-Type": "application/x-www-form-urlencoded",
+		},
+		result)
+
+	if err != nil {
+		slog.Error("Could not send Telegram notification", "error", err, "domain", event.Registry.Domain.Value())
 	}
 }
 

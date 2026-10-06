@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/bymoxb/domainwatcher/internal/application/services"
 	eventsdomain "github.com/bymoxb/domainwatcher/internal/domain/events"
@@ -121,22 +122,50 @@ func SetupOrigins(cfg *config.Config, router *gin.Engine) error {
 	return nil
 }
 
-func RegisterListener(cfg *config.Config, dispatcher eventsdomain.Broker, rs *services.RegistryService, httpClient *helpers.HttpClient) error {
-	var subRegistry eventsdomain.Subscriber = eventsinfra.NewSubRegistry(*rs)
-	go subRegistry.Subscribe(dispatcher.Subscribe())
+func RegisterListener(
+	cfg *config.Config,
+	dispatcher eventsdomain.Broker,
+	rs *services.RegistryService,
+	httpClient *helpers.HttpClient,
+) error {
+
+	// Registry
+	subRegistry := eventsinfra.NewSubRegistry(*rs)
+
+	registryCh, _ := dispatcher.Subscribe(
+		eventsdomain.TopicRegistryChanged,
+	)
+
+	go subRegistry.Run(registryCh)
+
+	// Notification
+	notificationCh, _ := dispatcher.Subscribe(
+		eventsdomain.TopicNotification,
+	)
 
 	switch cfg.NotificationChannel {
+
 	case config.NC_SMTP:
-		var subSMTP eventsdomain.Subscriber = eventsinfra.NewSubSMTP(cfg)
-		go subSMTP.Subscribe(dispatcher.Subscribe())
-		return nil
+		subSMTP := eventsinfra.NewSubSMTP(cfg)
+
+		go subSMTP.Run(notificationCh)
+
 	case config.NC_TGR:
-		var subtgram eventsdomain.Subscriber = eventsinfra.NewSubTelegram(cfg, *httpClient)
-		go subtgram.Subscribe(dispatcher.Subscribe())
-		return nil
+		subTelegram := eventsinfra.NewSubTelegram(
+			cfg,
+			*httpClient,
+		)
+
+		go subTelegram.Run(notificationCh)
+
 	default:
-		return fmt.Errorf("Unsupported notification type: %s", cfg.DBDriver)
+		return fmt.Errorf(
+			"unsupported notification type: %s",
+			cfg.NotificationChannel,
+		)
 	}
+
+	return nil
 }
 
 func ExecuteMigrations(cfg *config.Config, db *gorm.DB) error {
@@ -204,9 +233,10 @@ func RegisterControllers(ws *services.WatcherService, rs *services.RegistryServi
 
 func RegisterCrons(cron *cron.Cron, cfg *config.Config, dispatcher eventsdomain.Broker, rs *services.RegistryService) error {
 
-	_, err := cron.AddFunc(cfg.CronValue, rs.CheckRegistryStatus)
-
-	if err != nil {
+	if _, err := cron.AddFunc(cfg.CronValue, func() {
+		slog.Info("Cron running", "CronName", "CheckRegistryStatus")
+		rs.CheckRegistryStatus()
+	}); err != nil {
 		return fmt.Errorf("Error adding job to the scheduler : %w", err)
 	}
 
