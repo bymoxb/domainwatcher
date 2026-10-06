@@ -12,4 +12,6 @@ type RegistryRepository interface {
 	GetById(id uuid.UUID) *Registry
 	UpdateRegistry(registryId uuid.UUID, model Registry) *Registry
 	GetAboutExpiredRegistries(days int) []Registry
+	GetUnregisteredRegistries() []Registry
+	DeleteRegistry(id uuid.UUID) error
 }

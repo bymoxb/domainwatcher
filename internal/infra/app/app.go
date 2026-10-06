@@ -129,7 +129,7 @@ func RegisterListener(
 	httpClient *helpers.HttpClient,
 ) error {
 
-	// Registry
+	// Update Registry metadata
 	subRegistry := eventsinfra.NewSubRegistry(*rs)
 
 	registryCh, _ := dispatcher.Subscribe(
@@ -137,6 +137,15 @@ func RegisterListener(
 	)
 
 	go subRegistry.Run(registryCh)
+
+	// Remove unwatached and unregistered registry
+	subPurgeRegistryUnregistered := eventsinfra.NewSubPurgeRegistryUnregistered(*rs)
+
+	subPurgeRegistryUnregisteredCh, _ := dispatcher.Subscribe(
+		eventsdomain.TopicRegistryEligibleForPurge,
+	)
+
+	go subPurgeRegistryUnregistered.Run(subPurgeRegistryUnregisteredCh)
 
 	// Notification
 	notificationCh, _ := dispatcher.Subscribe(
@@ -194,6 +203,10 @@ func BuildAdapters(cfg *config.Config, httpClient *helpers.HttpClient) []registr
 		adapterList = append(adapterList, adapters.NewWhoisJsonAdapter(httpClient, cfg.WhoisJsonAPIKey))
 	}
 
+	for _, adapter := range adapterList {
+		slog.Info("Adapter registered", "name", adapter.GetName())
+	}
+
 	return adapterList
 }
 
@@ -236,6 +249,13 @@ func RegisterCrons(cron *cron.Cron, cfg *config.Config, dispatcher eventsdomain.
 	if _, err := cron.AddFunc(cfg.CronValue, func() {
 		slog.Info("Cron running", "CronName", "CheckRegistryStatus")
 		rs.CheckRegistryStatus()
+	}); err != nil {
+		return fmt.Errorf("Error adding job to the scheduler : %w", err)
+	}
+
+	if _, err := cron.AddFunc(cfg.CronValue, func() {
+		slog.Info("Cron running", "CronName", "CheckUnregisterdRegistry")
+		rs.CheckUnregisteredRegistries()
 	}); err != nil {
 		return fmt.Errorf("Error adding job to the scheduler : %w", err)
 	}

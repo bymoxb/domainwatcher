@@ -13,3 +13,7 @@ type NotificationData struct {
 	Registry registry.Registry
 	Watchers []watcher.Watcher
 }
+
+type RegistryUnregisteredAndNotWatchedData struct {
+	Registry registry.Registry
+}

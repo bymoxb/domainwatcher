@@ -3,8 +3,9 @@ package events
 type Topic string
 
 const (
-	TopicRegistryChanged Topic = "registry.changed"
-	TopicNotification    Topic = "notification"
+	TopicRegistryChanged          Topic = "registry.changed"
+	TopicNotification             Topic = "notification"
+	TopicRegistryEligibleForPurge Topic = "registry.unregistered"
 )
 
 type Broker interface {

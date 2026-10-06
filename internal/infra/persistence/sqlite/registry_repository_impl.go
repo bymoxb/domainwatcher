@@ -105,3 +105,27 @@ func (rr *RegistryRepositoryImpl) GetAboutExpiredRegistries(days int) []registry
 
 	return registries
 }
+
+func (rr *RegistryRepositoryImpl) GetUnregisteredRegistries() []registry.Registry {
+
+	var registries []registry.Registry = []registry.Registry{}
+
+	var origins []RegistryModel
+	result := rr.DB.
+		Where("status = ?", vos.StatusWatchlist).
+		Find(&origins)
+
+	if result.Error != nil {
+		return []registry.Registry{}
+	}
+
+	for _, r := range origins {
+		registries = append(registries, *MapRegistryToDomain(&r))
+	}
+
+	return registries
+}
+
+func (rr *RegistryRepositoryImpl) DeleteRegistry(id uuid.UUID) error {
+	return rr.DB.Delete(&RegistryModel{ID: id}).Error
+}

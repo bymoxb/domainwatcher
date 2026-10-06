@@ -49,6 +49,35 @@ func (rs *RegistryService) CheckRegistryStatus() {
 	}
 }
 
+func (rs *RegistryService) CheckUnregisteredRegistries() {
+	result := rs.rr.GetUnregisteredRegistries()
+
+	for _, registryStored := range result {
+		watchers := rs.wr.GetWatchersToNotify(registryStored.ID)
+
+		if tempRegistry := rs.SearchInAdapters(registryStored.Domain); tempRegistry != nil {
+			registryUpdated := rs.rr.UpdateRegistry(registryStored.ID, *tempRegistry)
+			slog.Debug("Registry is registered", "domain", registryStored.Domain.Value(), "watchers:", len(watchers))
+
+			rs.broker.Publish(events.Event{
+				Topic: events.TopicNotification,
+				Content: events.NotificationData{
+					Registry: *registryUpdated,
+					Watchers: watchers,
+				},
+			})
+		} else if len(watchers) <= 0 {
+			slog.Debug("Registry to delete", "domain", registryStored.Domain.Value(), "watchers:", len(watchers))
+			rs.broker.Publish(events.Event{
+				Topic: events.TopicRegistryEligibleForPurge,
+				Content: events.RegistryUnregisteredAndNotWatchedData{
+					Registry: registryStored,
+				},
+			})
+		}
+	}
+}
+
 func (rs *RegistryService) SearchInAdapters(domain vos.Domain) *registry.Registry {
 	for _, adapter := range rs.adapters {
 		slog.Info("Search in adapter", "adapter", adapter.GetName(), "domain", domain.Value())
@@ -97,6 +126,16 @@ func (rs *RegistryService) RefreshRegistry(registry *registry.Registry) *registr
 
 	return registry
 
+}
+
+func (rs *RegistryService) DeleteRegistry(model registry.Registry) {
+	if err := rs.rr.DeleteRegistry(model.ID); err != nil {
+		slog.Error(
+			"could not delete registry",
+			"id", model.ID,
+			"error", err,
+		)
+	}
 }
 
 func isMoreThan(fecha time.Time, days int) bool {
