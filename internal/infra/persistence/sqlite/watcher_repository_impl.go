@@ -26,7 +26,7 @@ func (wr *WatcherRepositoryImpl) SearchWatcher(email vos.Email, order string, so
 	query := wr.DB.
 		Where(&WatcherModel{MailAddress: email.Value()}).
 		Where("dw_watcher.deleted_at IS NULL").
-		Joins("Registry")
+		InnerJoins("Registry")
 
 	desc := sort == "desc"
 
@@ -119,7 +119,7 @@ func (wr *WatcherRepositoryImpl) GetWatchersToNotify(registryId uuid.UUID) []wat
 	query := wr.DB.
 		Where(&WatcherModel{RegistryID: registryId, NotificationEnabled: true}).
 		Where("dw_watcher.deleted_at IS NULL").
-		Joins("Registry")
+		InnerJoins("Registry")
 
 	var hits []WatcherModel = []WatcherModel{}
 
